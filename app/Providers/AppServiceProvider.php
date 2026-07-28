@@ -19,6 +19,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        // Se estiver no Wasmer, força a execução da migration ao carregar a página
+         if (env('WASMER_DATABASE_PASSWORD') || app()->environment('production')) {
+              \Artisan::call('migrate', ['--force' => true]);
+        }
     }
 }
