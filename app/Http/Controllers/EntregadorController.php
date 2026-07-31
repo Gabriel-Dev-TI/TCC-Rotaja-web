@@ -4,44 +4,74 @@ namespace App\Http\Controllers;
 
 use App\Models\Entregador;
 use App\Models\Entrega;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 
 class EntregadorController extends Controller
 {
-    // Tela pública de cadastro
     public function create()
     {
         return view('entregadores.create');
     }
 
-    // Salvar cadastro do entregador
     public function store(Request $request)
     {
         $request->validate([
             'nome'         => 'required|string|max:255',
-            'cpf'          => 'required|string|unique:entregadores',
-            'tipo_veiculo' => 'required|string',
+            'cpf'          => 'required|string|unique:entregadores,cpf',
             'telefone'     => 'required|string',
+            'tipo_veiculo' => 'required|string',
+            'email'        => 'required|email|unique:usuarios,email',
+            'password'     => 'required|string|min:8',
         ]);
 
-        Entregador::create($request->all());
+        DB::transaction(function () use ($request) {
+            $user = User::create([
+                'nome'     => $request->nome,
+                'email'    => $request->email,
+                'senha'    => Hash::make($request->password),
+                'telefone' => $request->telefone,
+                'cargo'    => 'entregador',
+            ]);
 
-        return redirect()->route('login')->with('success', 'Cadastro realizado! Aguarde a aprovação do Admin.');
+            Entregador::create([
+                'usuario_id'   => $user->id,
+                'nome'         => $request->nome,
+                'cpf'          => $request->cpf,
+                'telefone'     => $request->telefone,
+                'tipo_veiculo' => $request->tipo_veiculo,
+            ]);
+
+            Auth::login($user);
+        });
+
+        return redirect()->route('entregador.dashboard')->with('success', 'Cadastro realizado com sucesso!');
     }
 
-    // Painel do Entregador: Entregas disponíveis e corrida atual
+    /**
+     * Exibe o Painel/Dashboard do Entregador
+     */
     public function dashboard()
     {
-        $entregadorId = auth()->user()->entregador_id ?? null;
+        $user = auth()->user();
 
-        // Entregas abertas para qualquer entregador aceitar
-        $entregasPendentes = Entrega::where('status', 'pendente')->get();
+        // Busca o registro de entregador do usuário logado
+        $entregador = Entregador::where('usuario_id', $user->id)->first();
 
-        // Entrega que este entregador aceitou e está fazendo agora
-        $entregaAtual = Entrega::where('entregador_id', $entregadorId)
-            ->where('status', 'em_andamento')
-            ->first();
+        // Busca a entrega atual que o entregador está realizando (se houver)
+        $entregaAtual = null;
+        if ($entregador) {
+            $entregaAtual = Entrega::where('entregador_id', $entregador->id)
+                ->where('status', 'em_andamento')
+                ->first();
+        }
 
-        return view('entregadores.dashboard', compact('entregasPendentes', 'entregaAtual'));
+        // Busca entregas pendentes disponíveis na região para ele aceitar
+        $entregasPendentes = Entrega::where('status', 'pendente')->latest()->get();
+
+        return view('entregadores.dashboard', compact('entregaAtual', 'entregasPendentes'));
     }
 }

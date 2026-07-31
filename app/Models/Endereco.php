@@ -19,6 +19,8 @@ class Endereco extends Model
         'estado',
         'cep',
         'complemento',
+        'latitude',
+        'longitude',
     ];
 
     public function empresas()

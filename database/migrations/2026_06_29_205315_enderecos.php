@@ -15,8 +15,10 @@ return new class extends Migration
         $table->string('bairro');
         $table->string('cidade');
         $table->char('estado', 2);
-        $table->string('cep', 9);
+        $table->index('cep'); //index serve para ao consultar encontrar o cep mais rapido
         $table->string('complemento')->nullable();
+        $table->decimal('latitude',10,7)->nullable();
+        $table->decimal('longitude',10,7)->nullable();
         $table->timestamps();
         $table->softDeletes();
     });

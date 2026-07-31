@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('senha');
             $table->string('telefone', 20);
             $table->enum('cargo', ['admin', 'empresa', 'entregador']);
+            $table->string('foto')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

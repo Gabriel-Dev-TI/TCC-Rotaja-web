@@ -13,17 +13,38 @@ class Entrega extends Model
     protected $table = 'entregas';
 
     protected $fillable = [
-        'status',
-        'preco',
-        'largura',
-        'altura',
-        'peso',
-        'observacoes',
-        'empresa_id',
-        'entregador_id',
-        'endereco_origem_id',
-        'endereco_destino_id',
+    'nome_produto',
+    'descricao',
+    'status',
+    'preco',
+    'largura',
+    'altura',
+    'peso',
+    'distancia',
+    'tempo_estimado_minutos',
+    'observacoes',
+
+    'empresa_id',
+    'entregador_id',
+    'endereco_origem_id',
+    'endereco_destino_id',
     ];
+
+    protected function casts(): array
+    {
+        return [
+          'preco' => 'decimal:2',
+           'peso' => 'decimal:2',
+           'altura' => 'decimal:2',
+           'largura' => 'decimal:2',
+           'distancia' => 'decimal:2',
+        ];
+    }
+
+    public function getPrecoFormatadoAttribute()
+    {
+     return number_format($this->preco, 2, ',', '.');
+    }
 
     public function empresa()
     {

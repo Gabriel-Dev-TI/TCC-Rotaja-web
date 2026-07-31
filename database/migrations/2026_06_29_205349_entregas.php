@@ -10,11 +10,15 @@ return new class extends Migration
     public function up(): void {
     Schema::create('entregas', function (Blueprint $table) {
         $table->id();
-        $table->enum('status', ['pendente','em_transito', 'concluido', 'cancelado'])->default('pendente');
+        $table->string('nome_produto');
+        $table->enum('status', ['pendente', 'aceita', 'em_transito', 'concluido', 'cancelado'])->default('pendente');
         $table->decimal('preco', 10, 2);
         $table->decimal('largura', 10, 2);
         $table->decimal('altura', 10, 2);
         $table->decimal('peso', 10, 2);
+        $table->decimal('distancia',8,2)->nullable();
+        $table->integer('tempo_estimado_minutos')->nullable();
+        $table->text('descricao')->nullable();
         $table->text('observacoes')->nullable();
         $table->timestamps();
         $table->softDeletes();
