@@ -12,7 +12,6 @@ Route::post('/login', [UsuarioController::class, 'login']);
 //Cadastro
 Route::post('/entregadores',[EntregadorController::class,'store']);
 Route::post('/empresas',[EmpresaController::class,'store']);
-Route::post('/enderecos',[EnderecoController::class,'store']);
 
 //Rotas que exigem Token Bearer do Sanctum
 Route::middleware('auth:sanctum')->group(function () {

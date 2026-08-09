@@ -1,0 +1,274 @@
+<nav id="sidebar" class="sidebar js-sidebar">
+			<div class="sidebar-content js-simplebar">
+                <div class="text-center w-100">
+    			<h1 class="m-0 mt-3 fw-bold">
+      		  <span style="color:#000;">Rota</span><span style="color:white;">Já</span>
+  			  </h1>
+			</div>
+
+				<ul class="sidebar-nav">
+
+    <li class="sidebar-header">
+        Páginas
+    </li>
+
+
+    {{-- ================================================= --}}
+    {{-- ADMIN --}}
+    {{-- ================================================= --}}
+
+    @if (auth()->user()->cargo === 'admin')
+
+        {{-- PAINEL --}}
+        <li class="sidebar-item {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
+
+            <a
+                class="sidebar-link"
+                href="{{ route('admin.dashboard') }}"
+            >
+                <i
+                    class="align-middle"
+                    data-feather="sliders"
+                ></i>
+
+                <span class="align-middle">
+                    Painel
+                </span>
+            </a>
+
+        </li>
+
+
+        {{-- ENTREGADORES --}}
+        <li class="sidebar-item {{ request()->routeIs('entregadores.*') ? 'active' : '' }}">
+
+            <a
+                class="sidebar-link"
+                href="{{ route('entregadores.index') }}"
+            >
+                <i
+                    class="align-middle"
+                    data-feather="truck"
+                ></i>
+
+                <span class="align-middle">
+                    Entregadores
+                </span>
+            </a>
+
+        </li>
+
+
+        {{-- EMPRESAS --}}
+        <li class="sidebar-item {{ request()->routeIs('empresas.*') ? 'active' : '' }}">
+
+            <a
+                class="sidebar-link"
+                href="{{ route('empresas.index') }}"
+            >
+                <i
+                    class="align-middle"
+                    data-feather="users"
+                ></i>
+
+                <span class="align-middle">
+                    Empresas
+                </span>
+            </a>
+
+        </li>
+
+
+        {{-- ENTREGAS --}}
+        <li class="sidebar-item {{ request()->routeIs('entregas.*') ? 'active' : '' }}">
+
+            <a
+                class="sidebar-link"
+                href="{{ route('entregas.index') }}"
+            >
+                <i
+                    class="align-middle"
+                    data-feather="shopping-cart"
+                ></i>
+
+                <span class="align-middle">
+                    Entregas
+                </span>
+            </a>
+
+        </li>
+
+
+    {{-- ================================================= --}}
+    {{-- ENTREGADOR --}}
+    {{-- ================================================= --}}
+
+    @elseif (auth()->user()->cargo === 'entregador')
+
+        {{-- PAINEL --}}
+        <li class="sidebar-item {{ request()->routeIs('entregador.dashboard') ? 'active' : '' }}">
+
+            <a
+                class="sidebar-link"
+                href="{{ route('entregador.dashboard') }}"
+            >
+                <i
+                    class="align-middle"
+                    data-feather="sliders"
+                ></i>
+
+                <span class="align-middle">
+                    Painel
+                </span>
+            </a>
+
+        </li>
+
+
+        {{-- ROTA --}}
+        <li class="sidebar-item {{ request()->routeIs('rota') ? 'active' : '' }}">
+
+            <a
+                class="sidebar-link"
+                href="{{ route('rota') }}"
+            >
+                <i
+                    class="align-middle"
+                    data-feather="map"
+                ></i>
+
+                <span class="align-middle">
+                    Rota
+                </span>
+            </a>
+
+        </li>
+
+
+    {{-- ================================================= --}}
+    {{-- EMPRESA --}}
+    {{-- ================================================= --}}
+
+    @elseif (auth()->user()->cargo === 'empresa')
+
+        {{-- PAINEL --}}
+        <li class="sidebar-item {{ request()->routeIs('empresa.dashboard') ? 'active' : '' }}">
+
+            <a
+                class="sidebar-link"
+                href="{{ route('empresa.dashboard') }}"
+            >
+                <i
+                    class="align-middle"
+                    data-feather="sliders"
+                ></i>
+
+                <span class="align-middle">
+                    Painel
+                </span>
+            </a>
+
+        </li>
+
+
+        {{-- CADASTRAR ENTREGA --}}
+        <li class="sidebar-item {{ request()->routeIs('entregas.create') ? 'active' : '' }}">
+
+            <a
+                class="sidebar-link"
+                href="{{ route('entregas.create') }}"
+            >
+                <i
+                    class="align-middle"
+                    data-feather="shopping-cart"
+                ></i>
+
+                <span class="align-middle">
+                    Cadastrar entrega
+                </span>
+            </a>
+
+        </li>
+
+
+        {{-- ENDEREÇOS --}}
+        <li class="sidebar-item {{ request()->routeIs('enderecos.*') ? 'active' : '' }}">
+
+            <a
+                class="sidebar-link"
+                href="{{ route('enderecos.index') }}"
+            >
+                <i
+                    class="align-middle"
+                    data-feather="map-pin"
+                ></i>
+
+                <span class="align-middle">
+                    Endereços
+                </span>
+            </a>
+
+        </li>
+
+    @endif
+
+
+    {{-- ================================================= --}}
+    {{-- PERFIL --}}
+    {{-- ================================================= --}}
+
+    <li class="sidebar-item {{ request()->routeIs('perfil') ? 'active' : '' }}">
+
+        <a
+            class="sidebar-link"
+            href="{{ route('perfil') }}"
+        >
+            <i
+                class="align-middle"
+                data-feather="user"
+            ></i>
+
+            <span class="align-middle">
+                Perfil
+            </span>
+        </a>
+
+    </li>
+
+
+    {{-- ================================================= --}}
+    {{-- SAIR --}}
+    {{-- ================================================= --}}
+
+    <li class="sidebar-item">
+
+        <form
+            method="POST"
+            action="{{ route('logout') }}"
+        >
+
+            @csrf
+
+            <button
+                type="submit"
+                class="border-0 bg-transparent sidebar-link"
+            >
+
+                <i
+                    class="align-middle"
+                    data-feather="log-out"
+                ></i>
+
+                <span class="align-middle">
+                    Sair
+                </span>
+
+            </button>
+
+        </form>
+
+    </li>
+
+</ul>
+			</div>
+		</nav>

@@ -1,51 +1,236 @@
-@extends('layouts.app')
+@extends('layouts.guest')
 
 @section('content')
-<style>
-    .hero-top-block { padding: 70px 0 50px 0; text-align: center; }
-    .hero-title { font-size: 3.5rem; font-weight: 900; letter-spacing: -2px; line-height: 1.15; max-width: 850px; margin: 0 auto; }
-    .hero-title span { color: var(--primary-purple); }
-    .block-card { background-color: #FFFFFF; border: 1px solid var(--border-color); border-radius: 24px; padding: 40px; height: 100%; display: flex; flex-direction: column; justify-content: space-between; transition: transform 0.2s; }
-    .block-card:hover { transform: translateY(-4px); }
-    .block-title { font-size: 1.8rem; font-weight: 800; letter-spacing: -1px; margin-bottom: 12px; }
-    .block-desc { font-size: 1.05rem; color: var(--muted-text); line-height: 1.6; margin-bottom: 30px; }
-</style>
 
-<header class="hero-top-block">
-    <div class="container">
-        <h1 class="hero-title">A plataforma que simplifica a logística urbana e conecta você ao seu <span>destino.</span></h1>
-    </div>
-</header>
+<div class="container py-2">
 
-<section class="pb-5">
-    <div class="container">
-        <div class="row g-4">
-            <div class="col-lg-6">
-                <div class="block-card">
-                    <div>
-                        <div class="mb-4"><i data-lucide="package-plus" style="width: 38px; height: 38px; color: var(--primary-purple);"></i></div>
-                        <h2 class="block-title">Envie produtos e gerencie frotas corporativas</h2>
-                        <p class="block-desc">Aumente a eficiência da sua operação logística. Soluções completas para e-commerce e comércio local com rastreamento contínuo e controle centralizado.</p>
-                    </div>
-                    <a href="{{ route('empresas.create') }}" class="btn btn-custom btn-purple w-fit d-inline-flex align-items-center gap-2">
-                        Começar como empresa <i data-lucide="arrow-right" style="width: 18px;"></i>
-                    </a>
-                </div>
+    <div class="row align-items-center g-4">
+
+        <div class="col-lg-5">
+
+            <span class="badge bg-primary-subtle text-primary px-3 py-2 mb-2 mt-3">
+                Logística inteligente
+            </span>
+
+            <h1 class="display-5 fw-bold mb-2">
+                Suas entregas,
+                <span class="text-primary">
+                    mais simples.
+                </span>
+            </h1>
+
+            <p class="text-muted mb-3">
+                O RotaJá conecta empresas e entregadores em uma única
+                plataforma, tornando cada entrega mais rápida e organizada.
+            </p>
+
+            <div class="d-flex gap-2 mb-3">
+
+                <a
+    href="{{ route('registro', ['tipo' => 'empresa']) }}"
+    class="btn btn-primary px-4"
+>
+    Sou uma empresa
+</a>
+
+<a
+    href="{{ route('registro', ['tipo' => 'entregador']) }}"
+    class="btn btn-outline-primary px-4"
+>
+    Sou entregador
+</a>
+
             </div>
 
-            <div class="col-lg-6">
-                <div class="block-card">
-                    <div>
-                        <div class="mb-4"><i data-lucide="navigation-2" style="width: 38px; height: 38px; color: var(--primary-blue);"></i></div>
-                        <h2 class="block-title">Gere receita pilotando com autonomia</h2>
-                        <p class="block-desc">Acesse pedidos de entrega na sua região, trabalhe nos horários que desejar e garanta repasses rápidos e transparentes direto na sua conta.</p>
-                    </div>
-                    <a href="{{ route('entregadores.create') }}" class="btn btn-custom btn-blue w-fit d-inline-flex align-items-center gap-2">
-                        Cadastrar como parceiro <i data-lucide="arrow-right" style="width: 18px;"></i>
-                    </a>
+            <div class="row g-2">
+
+                <div class="col-4">
+                    <i
+                        data-feather="map-pin"
+                        class="text-primary mb-1"
+                    ></i>
+
+                    <small class="d-block fw-semibold">
+                        Rastreamento
+                    </small>
                 </div>
+
+                <div class="col-4">
+                    <i
+                        data-feather="truck"
+                        class="text-primary mb-1"
+                    ></i>
+
+                    <small class="d-block fw-semibold">
+                        Entregadores
+                    </small>
+                </div>
+
+                <div class="col-4">
+                    <i
+                        data-feather="shield"
+                        class="text-primary mb-1"
+                    ></i>
+
+                    <small class="d-block fw-semibold">
+                        Segurança
+                    </small>
+                </div>
+
             </div>
+
         </div>
+
+
+        <div class="col-lg-7">
+
+            <div class="card mb-3">
+
+                <div class="card-body py-3 px-4">
+
+                    <div class="d-flex justify-content-between align-items-start">
+
+                        <div>
+                            <small class="text-muted">
+                                Visão geral
+                            </small>
+
+                            <h4 class="mb-2">
+                                Entregas
+                            </h4>
+                        </div>
+
+                        <i
+                            data-feather="activity"
+                            class="text-primary"
+                        ></i>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-4">
+                            <small class="text-muted">
+                                Pendentes
+                            </small>
+
+                            <h4 class="mb-0">
+                                12
+                            </h4>
+                        </div>
+
+                        <div class="col-4">
+                            <small class="text-muted">
+                                Em trânsito
+                            </small>
+
+                            <h4 class="mb-0">
+                                08
+                            </h4>
+                        </div>
+
+                        <div class="col-4">
+                            <small class="text-muted">
+                                Concluídas
+                            </small>
+
+                            <h4 class="mb-0">
+                                42
+                            </h4>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="row g-3 mb-3">
+
+                <div class="col-md-6">
+
+                    <div class="card h-100">
+
+                        <div class="card-body py-3 px-4">
+
+                            <i
+                                data-feather="package"
+                                class="text-primary mb-2"
+                            ></i>
+
+                            <h5 class="mb-1">
+                                Empresas
+                            </h5>
+
+                            <p class="text-muted mb-0 small">
+                                Gerencie suas entregas de forma simples.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="col-md-6">
+
+                    <div class="card h-100">
+
+                        <div class="card-body py-3 px-4">
+
+                            <i
+                                data-feather="navigation"
+                                class="text-primary mb-2"
+                            ></i>
+
+                            <h5 class="mb-1">
+                                Entregadores
+                            </h5>
+
+                            <p class="text-muted mb-0 small">
+                                Encontre entregas e acompanhe rotas.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="card bg-primary border-0">
+
+                <div class="card-body py-3 px-4 text-white">
+
+                    <div class="d-flex justify-content-between align-items-center">
+
+                        <div>
+
+                            <h5 class="text-white mb-1">
+                                Tudo em um só lugar.
+                            </h5>
+
+                            <small>
+                                Empresas e entregadores conectados
+                                em uma única plataforma.
+                            </small>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
     </div>
-</section>
+
+</div>
+
 @endsection

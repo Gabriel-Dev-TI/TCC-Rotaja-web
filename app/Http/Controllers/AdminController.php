@@ -8,18 +8,22 @@ use App\Models\Entrega;
 
 class AdminController extends Controller
 {
-    public function dashboard()
-    {
-        $totalEmpresas    = Empresa::count();
-        $totalEntregadores = Entregador::count();
-        $totalEntregas    = Entrega::count();
-        $ultimasEntregas  = Entrega::with(['empresa', 'entregador'])->latest()->take(10)->get();
+    public function index()
+{
+    $totalEntregas = Entrega::count();
+    $totalEmpresas = Empresa::count();
+    $totalEntregadores = Entregador::count();
 
-        return view('admin.dashboard', compact(
-            'totalEmpresas', 
-            'totalEntregadores', 
-            'totalEntregas', 
-            'ultimasEntregas'
-        ));
-    }
+    $ultimasEntregas = Entrega::with(['empresa', 'entregador'])
+        ->latest()
+        ->take(8)
+        ->get();
+
+    return view('admin.dashboard', [
+        'totalEntregas' => $totalEntregas,
+        'totalEmpresas' => $totalEmpresas,
+        'totalEntregadores' => $totalEntregadores,
+        'ultimasEntregas' => $ultimasEntregas,
+    ]);
+}
 }
