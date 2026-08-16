@@ -158,16 +158,8 @@
                             style="display: none;"
                         >
 
-                            <hr class="my-4">
-
-                            <h5 class="mb-3">
-                                Dados da empresa
-                            </h5>
-
 
                             <div class="row">
-
-                                {{-- CNPJ --}}
 
                                 <div class="col-md-6 mb-3">
 
@@ -211,6 +203,7 @@
                                         class="form-control form-control-lg"
                                         type="text"
                                         name="cep"
+                                        id="cep"
                                         value="{{ old('cep') }}"
                                         placeholder="Insira o CEP"
                                     >
@@ -235,6 +228,7 @@
                                         class="form-control form-control-lg"
                                         type="text"
                                         name="logradouro"
+                                        id="logradouro"
                                         value="{{ old('logradouro') }}"
                                         placeholder="Rua, avenida..."
                                     >
@@ -259,6 +253,7 @@
                                         class="form-control form-control-lg"
                                         type="text"
                                         name="numero"
+                                        id="numero"
                                         value="{{ old('numero') }}"
                                         placeholder="Número"
                                     >
@@ -283,6 +278,7 @@
                                         class="form-control form-control-lg"
                                         type="text"
                                         name="bairro"
+                                        id="bairro"
                                         value="{{ old('bairro') }}"
                                         placeholder="Insira o bairro"
                                     >
@@ -306,6 +302,7 @@
                                         class="form-control form-control-lg"
                                         type="text"
                                         name="cidade"
+                                        id="cidade"
                                         value="{{ old('cidade') }}"
                                         placeholder="Insira a cidade"
                                     >
@@ -329,9 +326,9 @@
                                         class="form-control form-control-lg"
                                         type="text"
                                         name="estado"
+                                        id="estado"
                                         value="{{ old('estado') }}"
-                                        placeholder="UF"
-                                        maxlength="2"
+                                        placeholder="Estado"
                                     >
 
                                     @error('estado')
@@ -356,6 +353,7 @@
                                         class="form-control form-control-lg"
                                         type="text"
                                         name="complemento"
+                                        id="complemento"
                                         value="{{ old('complemento') }}"
                                         placeholder="Apartamento, sala, referência..."
                                     >
@@ -369,6 +367,12 @@
                                 </div>
 
                             </div>
+
+                            @error('endereco')
+                                <div class="text-danger  my-1">
+                                    {{ $message }}
+                                </div>
+                             @enderror
 
                         </div>
 
@@ -402,29 +406,6 @@
                                     >
 
                                     @error('cpf')
-                                        <div class="text-danger small mt-1">
-                                            {{ $message }}
-                                        </div>
-                                    @enderror
-
-                                </div>
-
-
-                                <div class="col-md-6 mb-3">
-
-                                    <label class="form-label">
-                                        Placa do veículo
-                                    </label>
-
-                                    <input
-                                        class="form-control form-control-lg"
-                                        type="text"
-                                        name="placa"
-                                        value="{{ old('placa') }}"
-                                        placeholder="Insira a placa"
-                                    >
-
-                                    @error('placa')
                                         <div class="text-danger small mt-1">
                                             {{ $message }}
                                         </div>
@@ -597,22 +578,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function atualizarCampos() {
 
-        camposEmpresa.style.display = 'none';
+        camposEmpresa.style.display = tipoConta.value === 'empresa' ? 'block' : 'none';
 
-        camposEntregador.style.display = 'none';
-
-
-        if (tipoConta.value === 'empresa') {
-            camposEmpresa.style.display = 'block';
-        }
-
-
-        if (tipoConta.value === 'entregador') {
-            camposEntregador.style.display = 'block';
-        }
+        camposEntregador.style.display = tipoConta.value === 'entregador' ? 'block' : 'none';
 
     }
-
 
     tipoConta.addEventListener(
         'change',
@@ -624,6 +594,45 @@ document.addEventListener('DOMContentLoaded', function () {
 
 });
 
+const cep = document.getElementById('cep');
+
+cep.addEventListener('input', async function () {
+    let valor = this.value.replace(/\D/g, '');
+
+    if (valor.length > 8) {
+        valor = valor.substring(0, 8);
+    }
+
+    this.value = valor.replace(/^(\d{5})(\d{0,3})$/, '$1-$2');
+
+    if (valor.length !== 8) {
+        return;
+    }
+
+    try {
+        const resposta = await fetch(
+            `https://viacep.com.br/ws/${valor}/json/`
+        );
+
+        if (!resposta.ok) {
+            throw new Error('Erro ao consultar CEP');
+        }
+
+        const dados = await resposta.json();
+
+        if (dados.erro) {
+            return;
+        }
+
+        document.getElementById('logradouro').value = dados.logradouro || '';
+        document.getElementById('bairro').value = dados.bairro || '';
+        document.getElementById('cidade').value = dados.localidade || '';
+        document.getElementById('estado').value = dados.estado || '';
+
+    } catch (erro) {
+        console.error('Erro ao consultar CEP:', erro);
+    }
+});
 </script>
 
 @endsection

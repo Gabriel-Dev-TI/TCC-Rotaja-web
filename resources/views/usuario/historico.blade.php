@@ -2,106 +2,217 @@
 
 @section('content')
 
+<div class="mb-4">
+
+    <h1 class="h3 mb-1">
+        Histórico
+    </h1>
+
+    <p class="text-muted mb-0">
+        Confira suas entregas anteriores.
+    </p>
+
+</div>
+
+
 <div class="card">
+
     <div class="card-header">
-        <h5 class="card-title mb-0">Histórico</h5>
+
+        <h5 class="card-title mb-0">
+            Entregas
+        </h5>
+
     </div>
+
 
     <div class="table-responsive">
+
         <table class="table table-hover my-0">
+
             <thead>
+
                 <tr>
-                    <th>Nome</th>
-                    <th class="d-none d-xl-table-cell">Data</th>
-                    <th class="d-none d-md-table-cell">Empresa</th>
-                    <th>Status</th>
-                    <th class="d-none d-xl-table-cell">Entregador</th>
+
+                    <th>
+                        Produto
+                    </th>
+
+                    <th class="d-none d-xl-table-cell">
+                        Data
+                    </th>
+
+                    <th class="d-none d-md-table-cell">
+                        Empresa
+                    </th>
+
+                    <th>
+                        Status
+                    </th>
+
+                    <th class="d-none d-xl-table-cell">
+                        Entregador
+                    </th>
+
                 </tr>
+
             </thead>
 
+
             <tbody>
-                <tr>
-                    <td>Project Apollo</td>
-                    <td class="d-none d-xl-table-cell">01/01/2023</td>
-                    <td class="d-none d-md-table-cell">Empresa X</td>
-                    <td>
-                        <span class="badge bg-success">Finalizado</span>
-                    </td>
-                    <td class="d-none d-xl-table-cell">Vanessa Tucker</td>
-                </tr>
 
-                <tr>
-                    <td>Project Fireball</td>
-                    <td class="d-none d-xl-table-cell">01/01/2023</td>
-                    <td class="d-none d-md-table-cell">Empresa Y</td>
-                    <td>
-                        <span class="badge bg-danger">Cancelado</span>
-                    </td>
-                    <td class="d-none d-xl-table-cell">William Harris</td>
-                </tr>
+                @forelse ($ultimasEntregas as $entrega)
 
-                <tr>
-                    <td>Project Hades</td>
-                    <td class="d-none d-xl-table-cell">01/01/2023</td>
-                    <td class="d-none d-md-table-cell">Empresa Z</td>
-                    <td>
-                        <span class="badge bg-success">Finalizado</span>
-                    </td>
-                    <td class="d-none d-xl-table-cell">Sharon Lessman</td>
-                </tr>
+                    @php
 
-                <tr>
-                    <td>Project Nitro</td>
-                    <td class="d-none d-xl-table-cell">01/01/2023</td>
-                    <td class="d-none d-md-table-cell">Empresa X</td>
-                    <td>
-                        <span class="badge bg-warning">Em Andamento</span>
-                    </td>
-                    <td class="d-none d-xl-table-cell">Vanessa Tucker</td>
-                </tr>
+                        $statusCor = match($entrega->status) {
 
-                <tr>
-                    <td>Project Phoenix</td>
-                    <td class="d-none d-xl-table-cell">01/01/2023</td>
-                    <td class="d-none d-md-table-cell">Empresa Y</td>
-                    <td>
-                        <span class="badge bg-success">Finalizado</span>
-                    </td>
-                    <td class="d-none d-xl-table-cell">William Harris</td>
-                </tr>
+                            'pendente' =>
+                                'secondary',
 
-                <tr>
-                    <td>Project X</td>
-                    <td class="d-none d-xl-table-cell">01/01/2023</td>
-                    <td class="d-none d-md-table-cell">Empresa Z</td>
-                    <td>
-                        <span class="badge bg-success">Finalizado</span>
-                    </td>
-                    <td class="d-none d-xl-table-cell">Sharon Lessman</td>
-                </tr>
+                            'aceita' =>
+                                'info',
 
-                <tr>
-                    <td>Project Romeo</td>
-                    <td class="d-none d-xl-table-cell">01/01/2023</td>
-                    <td class="d-none d-md-table-cell">Empresa X</td>
-                    <td>
-                        <span class="badge bg-success">Finalizado</span>
-                    </td>
-                    <td class="d-none d-xl-table-cell">Christina Mason</td>
-                </tr>
+                            'em_transito' =>
+                                'warning',
 
-                <tr>
-                    <td>Project Wombat</td>
-                    <td class="d-none d-xl-table-cell">01/01/2023</td>
-                    <td class="d-none d-md-table-cell">Empresa Y</td>
-                    <td>
-                        <span class="badge bg-warning">Em Andamento</span>
-                    </td>
-                    <td class="d-none d-xl-table-cell">William Harris</td>
-                </tr>
+                            'concluido' =>
+                                'success',
+
+                            'cancelado' =>
+                                'danger',
+
+                            default =>
+                                'light',
+
+                        };
+
+
+                        $statusLabel = match($entrega->status) {
+
+                            'pendente' =>
+                                'Pendente',
+
+                            'aceita' =>
+                                'Aceita',
+
+                            'em_transito' =>
+                                'Em trânsito',
+
+                            'concluido' =>
+                                'Concluído',
+
+                            'cancelado' =>
+                                'Cancelado',
+
+                            default =>
+                                ucfirst($entrega->status),
+
+                        };
+
+                    @endphp
+
+
+                    <tr>
+
+                        {{-- PRODUTO --}}
+
+                        <td>
+
+                            <strong>
+                                {{ $entrega->nome_produto }}
+                            </strong>
+
+                        </td>
+
+
+                        {{-- DATA --}}
+
+                        <td class="d-none d-xl-table-cell">
+
+                            {{ $entrega->created_at->format('d/m/Y') }}
+
+                        </td>
+
+
+                        {{-- EMPRESA --}}
+
+                        <td class="d-none d-md-table-cell">
+
+                            {{ $entrega->empresa->usuario->nome ?? '—' }}
+
+                        </td>
+
+
+                        {{-- STATUS --}}
+
+                        <td>
+
+                            <span
+                                class="badge bg-{{ $statusCor }}"
+                            >
+                                {{ $statusLabel }}
+                            </span>
+
+                        </td>
+
+
+                        {{-- ENTREGADOR --}}
+
+                        <td class="d-none d-xl-table-cell">
+
+                            {{ $entrega->entregador->usuario->nome ?? '—' }}
+
+                        </td>
+
+                    </tr>
+
+
+                @empty
+
+                    <tr>
+
+                        <td
+                            colspan="5"
+                            class="text-center text-muted py-4"
+                        >
+
+                            <div class="mb-2">
+
+                                <i
+                                    data-feather="inbox"
+                                    style="width:40px;height:40px;"
+                                ></i>
+
+                            </div>
+
+                            Nenhuma entrega encontrada.
+
+                        </td>
+
+                    </tr>
+
+                @endforelse
+
             </tbody>
+
         </table>
+
     </div>
+
 </div>
 
 @endsection
+
+
+@push('scripts')
+
+<script>
+
+    if (typeof feather !== 'undefined') {
+        feather.replace();
+    }
+
+</script>
+
+@endpush

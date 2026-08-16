@@ -27,24 +27,25 @@
             <div class="d-flex gap-2 mb-3">
 
                 <a
-    href="{{ route('registro', ['tipo' => 'empresa']) }}"
-    class="btn btn-primary px-4"
->
-    Sou uma empresa
-</a>
+                    href="{{ route('registro', ['tipo' => 'empresa']) }}"
+                    class="btn btn-primary px-4"
+                >
+                    Sou uma empresa
+                </a>
 
-<a
-    href="{{ route('registro', ['tipo' => 'entregador']) }}"
-    class="btn btn-outline-primary px-4"
->
-    Sou entregador
-</a>
+                <a
+                    href="{{ route('registro', ['tipo' => 'entregador']) }}"
+                    class="btn btn-outline-primary px-4"
+                >
+                    Sou entregador
+                </a>
 
             </div>
 
             <div class="row g-2">
 
                 <div class="col-4">
+
                     <i
                         data-feather="map-pin"
                         class="text-primary mb-1"
@@ -53,9 +54,11 @@
                     <small class="d-block fw-semibold">
                         Rastreamento
                     </small>
+
                 </div>
 
                 <div class="col-4">
+
                     <i
                         data-feather="truck"
                         class="text-primary mb-1"
@@ -64,9 +67,11 @@
                     <small class="d-block fw-semibold">
                         Entregadores
                     </small>
+
                 </div>
 
                 <div class="col-4">
+
                     <i
                         data-feather="shield"
                         class="text-primary mb-1"
@@ -75,6 +80,7 @@
                     <small class="d-block fw-semibold">
                         Segurança
                     </small>
+
                 </div>
 
             </div>
@@ -84,6 +90,8 @@
 
         <div class="col-lg-7">
 
+            {{-- VISÃO GERAL --}}
+
             <div class="card mb-3">
 
                 <div class="card-body py-3 px-4">
@@ -91,6 +99,7 @@
                     <div class="d-flex justify-content-between align-items-start">
 
                         <div>
+
                             <small class="text-muted">
                                 Visão geral
                             </small>
@@ -98,6 +107,7 @@
                             <h4 class="mb-2">
                                 Entregas
                             </h4>
+
                         </div>
 
                         <i
@@ -107,36 +117,45 @@
 
                     </div>
 
+
                     <div class="row">
 
                         <div class="col-4">
+
                             <small class="text-muted">
                                 Pendentes
                             </small>
 
                             <h4 class="mb-0">
-                                12
+                                {{ $pendentes }}
                             </h4>
+
                         </div>
 
+
                         <div class="col-4">
+
                             <small class="text-muted">
                                 Em trânsito
                             </small>
 
                             <h4 class="mb-0">
-                                08
+                                {{ $emTransito }}
                             </h4>
+
                         </div>
 
+
                         <div class="col-4">
+
                             <small class="text-muted">
                                 Concluídas
                             </small>
 
                             <h4 class="mb-0">
-                                42
+                                {{ $concluidas }}
                             </h4>
+
                         </div>
 
                     </div>
@@ -145,6 +164,8 @@
 
             </div>
 
+
+            {{-- EMPRESAS / ENTREGADORES --}}
 
             <div class="row g-3 mb-3">
 
@@ -164,7 +185,8 @@
                             </h5>
 
                             <p class="text-muted mb-0 small">
-                                Gerencie suas entregas de forma simples.
+                                {{ $totalEmpresas }}
+                                {{ $totalEmpresas == 1 ? 'empresa cadastrada' : 'empresas cadastradas' }}.
                             </p>
 
                         </div>
@@ -190,7 +212,8 @@
                             </h5>
 
                             <p class="text-muted mb-0 small">
-                                Encontre entregas e acompanhe rotas.
+                                {{ $totalEntregadores }}
+                                {{ $totalEntregadores == 1 ? 'entregador cadastrado' : 'entregadores cadastrados' }}.
                             </p>
 
                         </div>
@@ -201,6 +224,8 @@
 
             </div>
 
+
+            {{-- RODAPÉ --}}
 
             <div class="card bg-primary border-0">
 

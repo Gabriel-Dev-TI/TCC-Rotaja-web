@@ -18,7 +18,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     //Perfil
     Route::get('/logout', [UsuarioController::class, 'logout']);
-    Route::get('/meu-perfil', [UsuarioController::class, 'meuPerfil']);
+    Route::get('/verifica-dados', [UsuarioController::class, 'verificaDados']);
     Route::put('/atualizar-senha', [UsuarioController::class, 'atualizarSenha']);
 
     //Listagens

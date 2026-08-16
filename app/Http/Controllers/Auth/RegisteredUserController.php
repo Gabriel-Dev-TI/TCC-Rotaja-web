@@ -12,15 +12,13 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Validation\Rules;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 
 class RegisteredUserController extends Controller
 {
-    /**
-     * Display the registration view.
-     */
     public function create(Request $request): View
     {
         return view('auth.register', [
@@ -36,13 +34,6 @@ class RegisteredUserController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $request->validate([
-
-            /*
-            |--------------------------------------------------------------------------
-            | Usuário
-            |--------------------------------------------------------------------------
-            */
-
             'nome' => [
                 'required',
                 'string',
@@ -52,7 +43,6 @@ class RegisteredUserController extends Controller
             'email' => [
                 'required',
                 'string',
-                'lowercase',
                 'email',
                 'max:255',
                 'unique:' . User::class,
@@ -75,25 +65,13 @@ class RegisteredUserController extends Controller
                 'in:empresa,entregador',
             ],
 
-
-            /*
-            |--------------------------------------------------------------------------
-            | Empresa
-            |--------------------------------------------------------------------------
-            */
-
+            // EMPRESA
             'cnpj' => [
                 'required_if:tipo,empresa',
                 'nullable',
                 'string',
                 'max:18',
             ],
-
-            /*
-            |--------------------------------------------------------------------------
-            | Endereço da empresa
-            |--------------------------------------------------------------------------
-            */
 
             'logradouro' => [
                 'required_if:tipo,empresa',
@@ -127,7 +105,6 @@ class RegisteredUserController extends Controller
                 'required_if:tipo,empresa',
                 'nullable',
                 'string',
-                'max:2',
             ],
 
             'cep' => [
@@ -143,24 +120,12 @@ class RegisteredUserController extends Controller
                 'max:255',
             ],
 
-            /*
-            |--------------------------------------------------------------------------
-            | Entregador
-            |--------------------------------------------------------------------------
-            */
-
+            // ENTREGADOR
             'cpf' => [
                 'required_if:tipo,entregador',
                 'nullable',
                 'string',
                 'max:14',
-            ],
-
-            'placa' => [
-                'required_if:tipo,entregador',
-                'nullable',
-                'string',
-                'max:10',
             ],
 
             'tipo_veiculo' => [
@@ -171,14 +136,81 @@ class RegisteredUserController extends Controller
             ],
         ]);
 
+        //Primeiro  Verifica se o endereço é valido
+        $coordenadas = null;
 
-        $usuario = DB::transaction(function () use ($request) {
+if ($request->tipo === 'empresa') {
 
-            /*
-            |--------------------------------------------------------------------------
-            | Cria o usuário
-            |--------------------------------------------------------------------------
-            */
+    // 1. Tenta pelo endereço usando Nominatim
+    $enderecoCompleto = sprintf(
+        '%s,%s,%s,%s-%s',
+        $request->logradouro,
+        $request->numero,
+        $request->bairro,
+        $request->cidade,
+        $request->estado
+    );
+
+    $resposta = Http::timeout(10)
+        ->withHeaders([
+            'User-Agent' => 'Rotaja/1.0',
+            'Accept-Language' => 'pt-BR',
+        ])
+        ->get('https://nominatim.openstreetmap.org/search', [
+            'format' => 'json',
+            'q' => $enderecoCompleto,
+        ]);
+
+    if ($resposta->successful()) {
+
+        $resultado = $resposta->json();
+
+        if (!empty($resultado)) {
+            $coordenadas = [
+                'latitude' => $resultado[0]['lat'],
+                'longitude' => $resultado[0]['lon'],
+            ];
+        }
+    }
+
+    // 2. Se não encontrou pelo endereço, tenta pelo CEP
+    if ($coordenadas === null) {
+
+        $cep = preg_replace('/\D/', '', $request->cep);
+
+        $respostaCep = Http::timeout(10)
+            ->get("https://cep.awesomeapi.com.br/json/{$cep}");
+
+        if ($respostaCep->successful()) {
+
+            $dadosCep = $respostaCep->json();
+
+            if (
+                isset($dadosCep['lat']) &&
+                isset($dadosCep['lng'])
+            ) {
+                $coordenadas = [
+                    'latitude' => $dadosCep['lat'],
+                    'longitude' => $dadosCep['lng'],
+                ];
+            }
+        }
+    }
+
+    // 3. Só dá erro se os dois métodos falharem
+    if ($coordenadas === null) {
+
+        return back()
+            ->withInput()
+            ->withErrors([
+                'endereco' =>
+                    'Não foi possível obter as coordenadas do endereço.',
+            ]);
+    }
+}
+
+
+        $usuario = DB::transaction(function () use ($request, $coordenadas) {
 
             $usuario = User::create([
                 'nome' => $request->nome,
@@ -188,18 +220,8 @@ class RegisteredUserController extends Controller
                 'cargo' => $request->tipo,
             ]);
 
-
-            /*
-            |--------------------------------------------------------------------------
-            | Empresa
-            |--------------------------------------------------------------------------
-            */
-
             if ($request->tipo === 'empresa') {
 
-                /*
-                * Primeiro cria o endereço
-                */
                 $endereco = Endereco::create([
                     'logradouro' => $request->logradouro,
                     'numero' => $request->numero,
@@ -208,15 +230,10 @@ class RegisteredUserController extends Controller
                     'estado' => $request->estado,
                     'cep' => $request->cep,
                     'complemento' => $request->complemento,
-                    'latitude' => null,
-                    'longitude' => null,
+                    'latitude' => $coordenadas['latitude'],
+                    'longitude' => $coordenadas['longitude'],
                 ]);
 
-
-                /*
-                * Depois cria a empresa ligada ao usuário
-                * e ao endereço
-                */
                 Empresa::create([
                     'usuario_id' => $usuario->id,
                     'cnpj' => $request->cnpj,
@@ -224,51 +241,21 @@ class RegisteredUserController extends Controller
                 ]);
             }
 
-
-            /*
-            |--------------------------------------------------------------------------
-            | Entregador
-            |--------------------------------------------------------------------------
-            */
-
             if ($request->tipo === 'entregador') {
 
                 Entregador::create([
                     'usuario_id' => $usuario->id,
                     'cpf' => $request->cpf,
-                    'placa' => $request->placa,
                     'tipo_veiculo' => $request->tipo_veiculo,
                 ]);
             }
 
-
             return $usuario;
         });
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | Evento de registro
-        |--------------------------------------------------------------------------
-        */
-
         event(new Registered($usuario));
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | Login automático
-        |--------------------------------------------------------------------------
-        */
-
         Auth::login($usuario);
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | Dashboard de acordo com o tipo
-        |--------------------------------------------------------------------------
-        */
 
         return redirect()->route(
             $usuario->cargo . '.dashboard'

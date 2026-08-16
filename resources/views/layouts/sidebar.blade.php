@@ -44,7 +44,7 @@
 
             <a
                 class="sidebar-link"
-                href="{{ route('entregadores.index') }}"
+                href="{{ route('admin.entregadores.index') }}"
             >
                 <i
                     class="align-middle"
@@ -64,7 +64,7 @@
 
             <a
                 class="sidebar-link"
-                href="{{ route('empresas.index') }}"
+                href="{{ route('admin.empresas.index') }}"
             >
                 <i
                     class="align-middle"
@@ -84,7 +84,7 @@
 
             <a
                 class="sidebar-link"
-                href="{{ route('entregas.index') }}"
+                href="{{ route('admin.entregas.index') }}"
             >
                 <i
                     class="align-middle"
@@ -217,11 +217,11 @@
     {{-- PERFIL --}}
     {{-- ================================================= --}}
 
-    <li class="sidebar-item {{ request()->routeIs('perfil') ? 'active' : '' }}">
+    <li class="sidebar-item {{ request()->routeIs('perfil.show') || request()->routeIs('perfil.edit')  ? 'active' : '' }}">
 
         <a
             class="sidebar-link"
-            href="{{ route('perfil') }}"
+            href="{{ route('perfil.show') }}"
         >
             <i
                 class="align-middle"
@@ -234,6 +234,27 @@
         </a>
 
     </li>
+
+    @if (auth()->user()->cargo != 'admin')
+
+    <li class="sidebar-item {{ request()->routeIs('historico')? 'active' : '' }}">
+
+        <a
+            class="sidebar-link"
+            href="{{ route('historico') }}"
+        >
+            <i
+                class="align-middle"
+                data-feather="clock"
+            ></i>
+
+            <span class="align-middle">
+                Histórico
+            </span>
+        </a>
+
+    </li>
+    @endif
 
 
     {{-- ================================================= --}}

@@ -3,61 +3,69 @@
 namespace App\Http\Controllers;
 
 use App\Models\Empresa;
-use App\Models\User;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
+use App\Models\Entrega;
 use Illuminate\Support\Facades\Auth;
 
 class EmpresaController extends Controller
 {
-    /**
-     * Exibe a tela de cadastro da empresa
-     */
-    public function create()
+    public function empresa()
     {
-        return view('empresas.create');
+        $empresa = Empresa::where('usuario_id', Auth::id())->firstOrFail();
+
+        // Total de entregas da empresa
+        $totalEntregas = Entrega::where('empresa_id', $empresa->id)->count();
+
+        // Entregas pendentes
+        $entregasPendentes = Entrega::where('empresa_id', $empresa->id)
+            ->where('status', 'pendente')
+            ->count();
+
+        // Entregas em andamento
+        $entregasAndamento = Entrega::where('empresa_id', $empresa->id)
+            ->whereIn('status', ['aceita', 'em_transito'])
+            ->count();
+
+        // Entregas concluídas
+        $entregasConcluidas = Entrega::where('empresa_id', $empresa->id)
+            ->where('status', 'concluido')
+            ->count();
+
+        // Entregas canceladas
+        $entregasCanceladas = Entrega::where('empresa_id', $empresa->id)
+            ->where('status', 'cancelado')
+            ->count();
+
+        // Últimas entregas
+        $ultimasEntregas = Entrega::with([
+                'empresa.usuario',
+                'entregador.usuario'
+            ])
+            ->where('empresa_id', $empresa->id)
+            ->latest()
+            ->take(8)
+            ->get();
+
+        // Entregas por mês
+        $entregasMensais = Entrega::where('empresa_id', $empresa->id)
+            ->whereYear('created_at', now()->year)
+            ->selectRaw('MONTH(created_at) as mes, COUNT(*) as total')
+            ->groupBy('mes')
+            ->pluck('total', 'mes');
+
+        $dadosMensais = [];
+
+        for ($i = 1; $i <= 12; $i++) {
+            $dadosMensais[] = $entregasMensais[$i] ?? 0;
+        }
+
+        return view('empresa.dashboard', compact(
+            'totalEntregas',
+            'entregasPendentes',
+            'entregasAndamento',
+            'entregasConcluidas',
+            'entregasCanceladas',
+            'ultimasEntregas',
+            'dadosMensais'
+        ));
     }
-
-    /**
-     * Processa o cadastro da empresa e do usuário
-     */
-    public function store(Request $request)
-    {
-        $request->validate([
-            'nome'     => 'required|string|max:255',
-            'cnpj'     => 'required|string|unique:empresas,cnpj',
-            'telefone' => 'required|string',
-            'email'    => 'required|email|unique:usuarios,email',
-            'password' => 'required|string|min:8',
-        ]);
-
-        DB::transaction(function () use ($request) {
-            
-            // 1. Cria o usuário associado na tabela 'usuarios'
-            $user = User::create([
-                'nome'     => $request->nome,
-                'email'    => $request->email,
-                'senha'    => Hash::make($request->password),
-                'telefone' => $request->telefone,
-                'cargo'    => 'empresa',
-            ]);
-
-            // 2. Cria a empresa associada
-            Empresa::create([
-                'usuario_id' => $user->id,
-                'nome'       => $request->nome,
-                'cnpj'       => $request->cnpj,
-                'email'      => $request->email,
-                'telefone'   => $request->telefone,
-            ]);
-
-            // 3. Loga o usuário cadastrado
-            Auth::login($user);
-        });
-
-        return redirect()->route('empresa.dashboard')->with('success', 'Empresa cadastrada com sucesso!');
-    }
-
-    // ... Seus outros métodos (dashboard, configuracoes, etc.)
 }

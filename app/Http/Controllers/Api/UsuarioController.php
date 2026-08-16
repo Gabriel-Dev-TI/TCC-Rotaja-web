@@ -55,28 +55,22 @@ class UsuarioController extends Controller
         ],200);
     }
 
-    public function meuPerfil()
+    public function verificaDados()
     {
     $usuario = Auth::user();
 
-    $documento = null;
-    if ($usuario->entregador) {
-        $documento = $usuario->entregador->cpf;
-    } elseif ($usuario->empresa) {
-        $documento = $usuario->empresa->cnpj;
+    if ($usuario->cargo === 'empresa') {
+        $usuario->load('empresa.endereco');
+    }
+
+    if ($usuario->cargo === 'entregador') {
+        $usuario->load('entregador');
     }
 
     return response()->json([
         'sucesso' => true,
-        'dados' => [
-            'nome' => $usuario->nome,
-            'email' => $usuario->email,
-            'telefone' => $usuario->telefone,
-            'cargo' => $usuario->cargo,
-            'documento' => $documento, 
-            'criado_em' => $usuario->created_at->format('d/m/Y'),
-        ]
-    ]);
+        'dados' => $usuario,
+    ],200);
     }
 
     public function atualizarSenha(Request $request)

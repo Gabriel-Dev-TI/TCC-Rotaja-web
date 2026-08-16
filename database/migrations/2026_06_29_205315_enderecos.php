@@ -14,7 +14,7 @@ return new class extends Migration
         $table->string('numero', 10);
         $table->string('bairro');
         $table->string('cidade');
-        $table->char('estado', 2);
+        $table->string('estado');
         $table->string('cep', 9);
         $table->index('cep'); //index serve para ao consultar encontrar o cep mais rapido
         $table->string('complemento')->nullable();

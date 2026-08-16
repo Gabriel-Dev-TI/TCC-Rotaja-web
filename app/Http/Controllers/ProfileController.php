@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\ProfileUpdateRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -12,7 +11,17 @@ use Illuminate\View\View;
 class ProfileController extends Controller
 {
     /**
-     * Display the user's profile form.
+     * Visualizar perfil
+     */
+    public function show(Request $request): View
+    {
+        return view('profile.show', [
+            'user' => $request->user(),
+        ]);
+    }
+
+    /**
+     * Editar perfil
      */
     public function edit(Request $request): View
     {
@@ -22,28 +31,53 @@ class ProfileController extends Controller
     }
 
     /**
-     * Update the user's profile information.
+     * Atualizar perfil
      */
-    public function update(ProfileUpdateRequest $request): RedirectResponse
+    public function update(Request $request): RedirectResponse
     {
-        $request->user()->fill($request->validated());
+        $request->validate([
+            'nome' => [
+                'required',
+                'string',
+                'max:255',
+            ],
 
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
-        }
+            'email' => [
+                'required',
+                'email',
+                'max:255',
+            ],
 
-        $request->user()->save();
+            'telefone' => [
+                'nullable',
+                'string',
+                'max:20',
+            ],
+        ]);
 
-        return Redirect::route('profile.edit')->with('status', 'profile-updated');
+        $user = $request->user();
+
+        $user->nome = $request->input('nome');
+        $user->email = $request->input('email');
+        $user->telefone = $request->input('telefone');
+
+        $user->save();
+
+        return redirect()
+            ->route('perfil.show')
+            ->with('status', 'profile-updated');
     }
 
     /**
-     * Delete the user's account.
+     * Excluir conta
      */
     public function destroy(Request $request): RedirectResponse
     {
         $request->validateWithBag('userDeletion', [
-            'password' => ['required', 'current_password'],
+            'password' => [
+                'required',
+                'current_password',
+            ],
         ]);
 
         $user = $request->user();

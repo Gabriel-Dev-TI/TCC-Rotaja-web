@@ -14,7 +14,6 @@ class Entregador extends Model
     protected $fillable = [
         'cpf',
         'tipo_veiculo',
-        'placa',
         'usuario_id',
     ];
 

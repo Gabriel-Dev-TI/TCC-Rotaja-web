@@ -27,6 +27,15 @@ class User extends Authenticatable
         'remember_token',
     ];
 
+    protected $appends = [
+        'data_registro',
+    ];
+
+    public function getDataRegistroAttribute()
+    {
+        return $this->created_at?->format('d/m/Y');
+    }
+
     protected function casts(): array
     {
         return [
