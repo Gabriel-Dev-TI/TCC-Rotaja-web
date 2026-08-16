@@ -33,181 +33,119 @@ class RegisteredUserController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
+        //Alguns campos precisam ser nullable
+        //Caso esteja sendo cadastrado uma empresa os campos do entregador precisam ser nulos
+        //E se for entregador os campos empresas precisam ser nulos
+
         $request->validate([
-            'nome' => [
-                'required',
-                'string',
-                'max:255',
-            ],
-
-            'email' => [
-                'required',
-                'string',
-                'email',
-                'max:255',
-                'unique:' . User::class,
-            ],
-
-            'senha' => [
-                'required',
-                'confirmed',
-                Rules\Password::defaults(),
-            ],
-
-            'telefone' => [
-                'required',
-                'string',
-                'max:20',
-            ],
-
-            'tipo' => [
-                'required',
-                'in:empresa,entregador',
-            ],
+            'nome' => ['required','string','max:255',],
+            'email' => ['required','string','email','max:255','unique:' . User::class,],
+            'senha' => ['required','confirmed',Rules\Password::defaults(),],
+            'telefone' => ['required','string','max:20',],
+            'tipo' => ['required','in:empresa,entregador',],
 
             // EMPRESA
-            'cnpj' => [
-                'required_if:tipo,empresa',
-                'nullable',
-                'string',
-                'max:18',
-            ],
-
-            'logradouro' => [
-                'required_if:tipo,empresa',
-                'nullable',
-                'string',
-                'max:255',
-            ],
-
-            'numero' => [
-                'required_if:tipo,empresa',
-                'nullable',
-                'string',
-                'max:20',
-            ],
-
-            'bairro' => [
-                'required_if:tipo,empresa',
-                'nullable',
-                'string',
-                'max:255',
-            ],
-
-            'cidade' => [
-                'required_if:tipo,empresa',
-                'nullable',
-                'string',
-                'max:255',
-            ],
-
-            'estado' => [
-                'required_if:tipo,empresa',
-                'nullable',
-                'string',
-            ],
-
-            'cep' => [
-                'required_if:tipo,empresa',
-                'nullable',
-                'string',
-                'max:9',
-            ],
-
-            'complemento' => [
-                'nullable',
-                'string',
-                'max:255',
-            ],
+            'cnpj' => ['required_if:tipo,empresa','nullable','string','max:18',],
+            'logradouro' => ['required_if:tipo,empresa','nullable','string','max:255',],
+            'numero' => ['required_if:tipo,empresa','nullable','string','max:20',],
+            'bairro' => ['required_if:tipo,empresa','nullable','string','max:255',],
+            'cidade' => ['required_if:tipo,empresa','nullable','string','max:255',],
+            'estado' => ['required_if:tipo,empresa','nullable','string',],
+            'cep' => ['required_if:tipo,empresa','nullable','string','max:9',],
+            'complemento' => ['nullable','string','max:255',],
 
             // ENTREGADOR
-            'cpf' => [
-                'required_if:tipo,entregador',
-                'nullable',
-                'string',
-                'max:14',
-            ],
-
-            'tipo_veiculo' => [
-                'required_if:tipo,entregador',
-                'nullable',
-                'string',
-                'max:50',
-            ],
+            'cpf' => ['required_if:tipo,entregador','nullable','string','max:14',],
+            'tipo_veiculo' => ['required_if:tipo,entregador','nullable','string','max:50',],
         ]);
 
-        //Primeiro  Verifica se o endereço é valido
-        $coordenadas = null;
+        //Se for empresa verifica antes de cadastrar se o endereço possui cordenadas
+        if ($request->tipo === 'empresa') {
 
-if ($request->tipo === 'empresa') {
+            // Formata o endereço para o ArcGIS
+            $enderecoCompleto = sprintf(
+                '%s %s, %s, %s, %s',
+                $request->logradouro,
+                $request->numero,
+                $request->bairro,
+                $request->cidade,
+                $request->estado
+            );
 
-    // 1. Tenta pelo endereço usando Nominatim
-    $enderecoCompleto = sprintf(
-        '%s,%s,%s,%s-%s',
-        $request->logradouro,
-        $request->numero,
-        $request->bairro,
-        $request->cidade,
-        $request->estado
-    );
+            // Consulta o ArcGIS
+            $resposta = Http::timeout(10)
+                ->get(
+                    'https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/findAddressCandidates',
+                    [
+                        'SingleLine' => $enderecoCompleto,
+                        'maxLocations' => 5,
+                        'outFields' => '*',
+                        'f' => 'json',
+                    ]
+                );
 
-    $resposta = Http::timeout(10)
-        ->withHeaders([
-            'User-Agent' => 'Rotaja/1.0',
-            'Accept-Language' => 'pt-BR',
-        ])
-        ->get('https://nominatim.openstreetmap.org/search', [
-            'format' => 'json',
-            'q' => $enderecoCompleto,
-        ]);
+            $coordenadas = null;
 
-    if ($resposta->successful()) {
+            if ($resposta->successful()) {
 
-        $resultado = $resposta->json();
+                $dados = $resposta->json();
 
-        if (!empty($resultado)) {
-            $coordenadas = [
-                'latitude' => $resultado[0]['lat'],
-                'longitude' => $resultado[0]['lon'],
-            ];
-        }
-    }
+                $candidatos = $dados['candidates'] ?? [];
 
-    // 2. Se não encontrou pelo endereço, tenta pelo CEP
-    if ($coordenadas === null) {
+                if (!empty($candidatos)) {
 
-        $cep = preg_replace('/\D/', '', $request->cep);
+                    foreach ($candidatos as $candidato) {
 
-        $respostaCep = Http::timeout(10)
-            ->get("https://cep.awesomeapi.com.br/json/{$cep}");
+                        $score = $candidato['attributes']['Score'] ?? 0;
 
-        if ($respostaCep->successful()) {
+                        $tipoEndereco = $candidato['attributes']['Addr_type'] ?? '';
 
-            $dadosCep = $respostaCep->json();
+                        $numeroEncontrado = trim((string) ($candidato['attributes']['AddNum'] ?? ''));
+                        $numeroInformado = trim((string) $request->numero);
 
-            if (
-                isset($dadosCep['lat']) &&
-                isset($dadosCep['lng'])
-            ) {
-                $coordenadas = [
-                    'latitude' => $dadosCep['lat'],
-                    'longitude' => $dadosCep['lng'],
-                ];
+                        /*
+                        * Aceitamos somente correspondências
+                        * com score alto e que realmente tenham
+                        * o número informado.
+                        *
+                        * No campo Addr_type verificamos se é
+                        *   PointAddress: Localizou exatamente o endereço
+                        *   StreetAddressExt: Localizou a rua
+                        */
+                        if (
+                            $score >= 90 &&
+                            $numeroEncontrado === $numeroInformado &&
+                            in_array($tipoEndereco, [
+                                'PointAddress',
+                                'StreetAddressExt',
+                            ])
+                        ) {
+
+                            $coordenadas = [
+                                'latitude' =>
+                                    $candidato['location']['y'],
+
+                                'longitude' =>
+                                    $candidato['location']['x'],
+                            ];
+
+                            break;
+                        }
+                    }
+                }
+            }
+
+            //Se não achar endereço,retorna o erro
+            if ($coordenadas === null) {
+
+                return back()
+                    ->withInput()
+                    ->withErrors([
+                        'endereco' =>
+                            'Não foi possível localizar exatamente o endereço informado. Verifique o endereço.',
+                    ]);
             }
         }
-    }
-
-    // 3. Só dá erro se os dois métodos falharem
-    if ($coordenadas === null) {
-
-        return back()
-            ->withInput()
-            ->withErrors([
-                'endereco' =>
-                    'Não foi possível obter as coordenadas do endereço.',
-            ]);
-    }
-}
 
 
         $usuario = DB::transaction(function () use ($request, $coordenadas) {

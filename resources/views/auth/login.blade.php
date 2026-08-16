@@ -27,7 +27,6 @@
 
                     @csrf
 
-                    {{-- EMAIL --}}
                     <div class="mb-3">
 
                         <label class="form-label">
@@ -64,8 +63,6 @@
 
                     </div>
 
-
-                    {{-- ERROS --}}
                     @if ($errors->any())
 
                         <div class="alert alert-danger">

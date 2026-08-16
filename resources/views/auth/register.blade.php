@@ -382,13 +382,6 @@
                             style="display: none;"
                         >
 
-                            <hr class="my-4">
-
-                            <h5 class="mb-3">
-                                Dados do entregador
-                            </h5>
-
-
                             <div class="row">
 
                                 <div class="col-md-6 mb-3">
@@ -565,6 +558,7 @@
 
 <script>
 
+//Ao selecionar o tipo de conta faz aparecer o formulario do tipo de conta
 document.addEventListener('DOMContentLoaded', function () {
 
     const tipoConta = document.getElementById('tipoConta');
@@ -594,6 +588,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
 });
 
+
+//Busca as informações do cep ao terminar de digitar o cep
 const cep = document.getElementById('cep');
 
 cep.addEventListener('input', async function () {

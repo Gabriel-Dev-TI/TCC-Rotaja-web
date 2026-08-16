@@ -90,8 +90,6 @@
 
         <div class="col-lg-7">
 
-            {{-- VISÃO GERAL --}}
-
             <div class="card mb-3">
 
                 <div class="card-body py-3 px-4">
@@ -164,9 +162,6 @@
 
             </div>
 
-
-            {{-- EMPRESAS / ENTREGADORES --}}
-
             <div class="row g-3 mb-3">
 
                 <div class="col-md-6">
@@ -223,9 +218,6 @@
                 </div>
 
             </div>
-
-
-            {{-- RODAPÉ --}}
 
             <div class="card bg-primary border-0">
 
