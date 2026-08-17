@@ -32,9 +32,6 @@
 
 </div>
 
-
-{{-- MENSAGENS --}}
-
 @if(session('success'))
 
     <div class="alert alert-success alert-dismissible fade show">
@@ -73,9 +70,7 @@
 @endif
 
 
-{{-- ENDEREÇO DA EMPRESA --}}
-
-<div class="card mb-4">
+<div class="card mb-3">
 
     <div class="card-header">
 
@@ -167,9 +162,6 @@
     </div>
 
 </div>
-
-
-{{-- ENDEREÇOS CADASTRADOS --}}
 
 <div class="card">
 

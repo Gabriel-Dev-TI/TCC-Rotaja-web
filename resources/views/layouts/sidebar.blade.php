@@ -12,11 +12,6 @@
         Páginas
     </li>
 
-
-    {{-- ================================================= --}}
-    {{-- ADMIN --}}
-    {{-- ================================================= --}}
-
     @if (auth()->user()->cargo === 'admin')
 
         {{-- PAINEL --}}
@@ -39,7 +34,6 @@
         </li>
 
 
-        {{-- ENTREGADORES --}}
         <li class="sidebar-item {{ request()->routeIs('entregadores.*') ? 'active' : '' }}">
 
             <a
@@ -58,8 +52,6 @@
 
         </li>
 
-
-        {{-- EMPRESAS --}}
         <li class="sidebar-item {{ request()->routeIs('empresas.*') ? 'active' : '' }}">
 
             <a
@@ -78,8 +70,6 @@
 
         </li>
 
-
-        {{-- ENTREGAS --}}
         <li class="sidebar-item {{ request()->routeIs('entregas.*') ? 'active' : '' }}">
 
             <a
@@ -97,11 +87,6 @@
             </a>
 
         </li>
-
-
-    {{-- ================================================= --}}
-    {{-- ENTREGADOR --}}
-    {{-- ================================================= --}}
 
     @elseif (auth()->user()->cargo === 'entregador')
 
@@ -124,8 +109,6 @@
 
         </li>
 
-
-        {{-- ROTA --}}
         <li class="sidebar-item {{ request()->routeIs('rota') ? 'active' : '' }}">
 
             <a
@@ -143,11 +126,6 @@
             </a>
 
         </li>
-
-
-    {{-- ================================================= --}}
-    {{-- EMPRESA --}}
-    {{-- ================================================= --}}
 
     @elseif (auth()->user()->cargo === 'empresa')
 
@@ -170,8 +148,6 @@
 
         </li>
 
-
-        {{-- CADASTRAR ENTREGA --}}
         <li class="sidebar-item {{ request()->routeIs('entregas.create') ? 'active' : '' }}">
 
             <a
@@ -190,8 +166,6 @@
 
         </li>
 
-
-        {{-- ENDEREÇOS --}}
         <li class="sidebar-item {{ request()->routeIs('enderecos.*') ? 'active' : '' }}">
 
             <a
@@ -212,28 +186,6 @@
 
     @endif
 
-
-    {{-- ================================================= --}}
-    {{-- PERFIL --}}
-    {{-- ================================================= --}}
-
-    <li class="sidebar-item {{ request()->routeIs('perfil.show') || request()->routeIs('perfil.edit')  ? 'active' : '' }}">
-
-        <a
-            class="sidebar-link"
-            href="{{ route('perfil.show') }}"
-        >
-            <i
-                class="align-middle"
-                data-feather="user"
-            ></i>
-
-            <span class="align-middle">
-                Perfil
-            </span>
-        </a>
-
-    </li>
 
     @if (auth()->user()->cargo != 'admin')
 
@@ -256,10 +208,23 @@
     </li>
     @endif
 
+    <li class="sidebar-item {{ request()->routeIs('perfil.show') || request()->routeIs('perfil.edit')  ? 'active' : '' }}">
 
-    {{-- ================================================= --}}
-    {{-- SAIR --}}
-    {{-- ================================================= --}}
+        <a
+            class="sidebar-link"
+            href="{{ route('perfil.show') }}"
+        >
+            <i
+                class="align-middle"
+                data-feather="user"
+            ></i>
+
+            <span class="align-middle">
+                Perfil
+            </span>
+        </a>
+
+    </li>
 
     <li class="sidebar-item">
 

@@ -25,10 +25,6 @@
 </div>
 
 
-{{-- =====================================================
-    MENSAGEM DE SUCESSO
-===================================================== --}}
-
 @if(session('status') === 'profile-updated')
 
     <div class="alert alert-success">
@@ -37,11 +33,6 @@
     </div>
 
 @endif
-
-
-{{-- =====================================================
-    ERROS
-===================================================== --}}
 
 @if($errors->any())
 
@@ -65,10 +56,6 @@
 
 
 <div class="row g-3">
-
-    {{-- =====================================================
-        INFORMAÇÕES PESSOAIS
-    ====================================================== --}}
 
     <div class="col-12">
 
@@ -101,9 +88,6 @@
 
                     <div class="row g-3">
 
-
-                        {{-- NOME --}}
-
                         <div class="col-md-6">
 
                             <label
@@ -133,9 +117,6 @@
 
                         </div>
 
-
-                        {{-- TELEFONE --}}
-
                         <div class="col-md-6">
 
                             <label
@@ -162,9 +143,6 @@
                             @enderror
 
                         </div>
-
-
-                        {{-- EMAIL --}}
 
                         <div class="col-md-6">
 
@@ -194,9 +172,6 @@
 
                         </div>
 
-
-                        {{-- CARGO --}}
-
                         <div class="col-md-6">
 
                             <label class="form-label">
@@ -215,9 +190,6 @@
                             </div>
 
                         </div>
-
-
-                        {{-- BOTÃO --}}
 
                         <div class="col-12">
 
@@ -248,11 +220,6 @@
         </div>
 
     </div>
-
-
-    {{-- =====================================================
-        ALTERAR SENHA
-    ====================================================== --}}
 
     <div class="col-12">
 
@@ -374,11 +341,6 @@
 
     </div>
 
-
-    {{-- =====================================================
-        EXCLUIR CONTA
-    ====================================================== --}}
-
     <div class="col-12">
 
         <div class="card border-0 shadow-sm">
@@ -438,11 +400,8 @@
                                 onclick="return confirm('Tem certeza que deseja excluir sua conta?')"
                             >
 
-                                <i
-                                    data-feather="trash-2"
-                                    class="me-1"
-                                ></i>
-
+                                <i data-feather="trash-2" class="me-1"></i>
+                                
                                 Excluir conta
 
                             </button>
@@ -462,16 +421,3 @@
 </div>
 
 @endsection
-
-
-@push('scripts')
-
-<script>
-
-    if (typeof feather !== 'undefined') {
-        feather.replace();
-    }
-
-</script>
-
-@endpush

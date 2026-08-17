@@ -148,12 +148,7 @@
 
     @else
 
-        {{-- MAPA --}}
-
         <div id="map"></div>
-
-
-        {{-- CARD --}}
 
         <div class="rota-card">
 
@@ -171,8 +166,6 @@
 
 
             <div class="rota-card-body">
-
-                {{-- ORIGEM --}}
 
                 <div class="info-item">
 
@@ -195,9 +188,6 @@
 
                 </div>
 
-
-                {{-- DESTINO --}}
-
                 <div class="info-item">
 
                     <span class="info-label">
@@ -219,8 +209,6 @@
 
                 </div>
 
-
-                {{-- INFORMAÇÕES --}}
 
                 <div class="row">
 
@@ -283,9 +271,6 @@
 
                 </div>
 
-
-                {{-- DESCRIÇÃO --}}
-
                 @if($entrega->descricao)
 
                     <div class="info-item">
@@ -301,9 +286,6 @@
                     </div>
 
                 @endif
-
-
-                {{-- OBSERVAÇÃO --}}
 
                 <div class="info-item">
 
@@ -323,9 +305,6 @@
                 </div>
 
             </div>
-
-
-            {{-- BOTÕES --}}
 
             <div class="rota-card-footer">
 
@@ -407,6 +386,7 @@ document.addEventListener('DOMContentLoaded', function () {
     ];
 
 
+    //Leaflet cria o mapa
     const map = L.map('map');
 
 
@@ -430,11 +410,7 @@ document.addEventListener('DOMContentLoaded', function () {
         .bindPopup('Destino');
 
 
-    /*
-     * OSRM
-     *
-     * Rota pelas ruas.
-     */
+    //OSRM busca a rota
     const url =
         'https://router.project-osrm.org/route/v1/driving/' +
         `${origem[1]},${origem[0]};` +
@@ -459,10 +435,6 @@ document.addEventListener('DOMContentLoaded', function () {
             const rota = data.routes[0];
 
 
-            /*
-             * DISTÂNCIA
-             */
-
             const distancia =
                 rota.distance / 1000;
 
@@ -471,11 +443,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 distancia
                     .toFixed(1)
                     .replace('.', ',') + ' km';
-
-
-            /*
-             * TEMPO
-             */
 
             const minutos =
                 Math.round(rota.duration / 60);
@@ -504,10 +471,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 .textContent = tempo;
 
 
-            /*
-             * CONVERTE A ROTA
-             */
-
             const pontos =
                 rota.geometry.coordinates.map(
                     ponto => [
@@ -527,10 +490,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     }
                 ).addTo(map);
 
-
-            /*
-             * ENQUADRAR SOMENTE NO ESPAÇO DO MAPA
-             */
 
             map.fitBounds(
                 linha.getBounds(),
@@ -567,11 +526,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 .textContent = 'Indisponível';
 
         });
-
-
-    /*
-     * REGISTRAR OBSERVAÇÃO
-     */
 
     document
         .getElementById('btnObservacao')
@@ -643,9 +597,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
 
-    /*
-     * Corrige o tamanho do mapa
-     */
 
     setTimeout(() => {
 

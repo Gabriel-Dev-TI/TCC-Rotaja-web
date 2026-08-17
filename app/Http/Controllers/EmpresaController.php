@@ -12,40 +12,29 @@ class EmpresaController extends Controller
     {
         $empresa = Empresa::where('usuario_id', Auth::id())->firstOrFail();
 
-        // Total de entregas da empresa
         $totalEntregas = Entrega::where('empresa_id', $empresa->id)->count();
 
-        // Entregas pendentes
         $entregasPendentes = Entrega::where('empresa_id', $empresa->id)
             ->where('status', 'pendente')
             ->count();
 
-        // Entregas em andamento
         $entregasAndamento = Entrega::where('empresa_id', $empresa->id)
             ->whereIn('status', ['aceita', 'em_transito'])
             ->count();
 
-        // Entregas concluídas
         $entregasConcluidas = Entrega::where('empresa_id', $empresa->id)
             ->where('status', 'concluido')
             ->count();
 
-        // Entregas canceladas
-        $entregasCanceladas = Entrega::where('empresa_id', $empresa->id)
-            ->where('status', 'cancelado')
-            ->count();
-
-        // Últimas entregas
         $ultimasEntregas = Entrega::with([
                 'empresa.usuario',
                 'entregador.usuario'
             ])
             ->where('empresa_id', $empresa->id)
+            ->whereIn('status', ['pendente','aceita', 'em_transito'])
             ->latest()
-            ->take(8)
             ->get();
 
-        // Entregas por mês
         $entregasMensais = Entrega::where('empresa_id', $empresa->id)
             ->whereYear('created_at', now()->year)
             ->selectRaw('MONTH(created_at) as mes, COUNT(*) as total')
@@ -63,7 +52,6 @@ class EmpresaController extends Controller
             'entregasPendentes',
             'entregasAndamento',
             'entregasConcluidas',
-            'entregasCanceladas',
             'ultimasEntregas',
             'dadosMensais'
         ));

@@ -10,14 +10,12 @@
 
 <div class="row">
 
-    {{-- ENTREGAS --}}
     <div class="col-xl-6 col-xxl-5 d-flex">
 
         <div class="w-100">
 
             <div class="row">
 
-                {{-- TOTAL --}}
                 <div class="col-sm-6">
 
                     <div class="card">
@@ -67,8 +65,6 @@
 
                 </div>
 
-
-                {{-- PENDENTES --}}
                 <div class="col-sm-6">
 
                     <div class="card">
@@ -118,8 +114,6 @@
 
                 </div>
 
-
-                {{-- ANDAMENTO --}}
                 <div class="col-sm-6">
 
                     <div class="card">
@@ -169,8 +163,6 @@
 
                 </div>
 
-
-                {{-- CONCLUÍDAS --}}
                 <div class="col-sm-6">
 
                     <div class="card">
@@ -226,8 +218,6 @@
 
     </div>
 
-
-    {{-- GRÁFICO DE MOVIMENTAÇÕES --}}
     <div class="col-xl-6 col-xxl-7">
 
         <div class="card flex-fill w-100">
@@ -235,7 +225,7 @@
             <div class="card-header">
 
                 <h5 class="card-title mb-0">
-                    Movimentações recentes
+                    Entregas este Ano
                 </h5>
 
             </div>
@@ -260,11 +250,8 @@
 </div>
 
 
-{{-- PARTE INFERIOR --}}
-
 <div class="row">
 
-    {{-- ÚLTIMAS ENTREGAS --}}
     <div class="col-12 col-lg-8 col-xxl-9 d-flex">
 
         <div class="card flex-fill">
@@ -272,7 +259,7 @@
             <div class="card-header">
 
                 <h5 class="card-title mb-0">
-                    Últimas entregas
+                    Entregas em andamento
                 </h5>
 
             </div>
@@ -322,12 +309,6 @@
                                 'em_transito' =>
                                     'warning',
 
-                                'concluido' =>
-                                    'success',
-
-                                'cancelado' =>
-                                    'danger',
-
                                 default =>
                                     'light',
 
@@ -344,12 +325,6 @@
 
                                 'em_transito' =>
                                     'Em trânsito',
-
-                                'concluido' =>
-                                    'Concluído',
-
-                                'cancelado' =>
-                                    'Cancelado',
 
                                 default =>
                                     ucfirst($entrega->status),
@@ -421,7 +396,6 @@
     </div>
 
 
-    {{-- ENTREGAS MENSAIS --}}
     <div class="col-12 col-lg-4 col-xxl-3 d-flex">
 
         <div class="card flex-fill w-100">
@@ -466,41 +440,9 @@
 
 document.addEventListener("DOMContentLoaded", function () {
 
-
-    /*
-     * GRÁFICO DE MOVIMENTAÇÕES
-     */
-
-    const lineCanvas =
-        document.getElementById(
-            "chartjs-dashboard-line"
-        );
-
-
-    const ctx =
-        lineCanvas.getContext("2d");
-
-
-    const gradient =
-        ctx.createLinearGradient(
-            0,
-            0,
-            0,
-            225
-        );
-
-
-    gradient.addColorStop(
-        0,
-        "rgba(215, 227, 244, 1)"
-    );
-
-
-    gradient.addColorStop(
-        1,
-        "rgba(215, 227, 244, 0)"
-    );
-
+    const lineCanvas = document.getElementById("chartjs-dashboard-line");
+    const ctx = lineCanvas.getContext("2d");
+    const gradient = ctx.createLinearGradient(0,0,0,225);
 
     new Chart(lineCanvas, {
 
@@ -527,13 +469,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 label: "Entregas",
 
-                fill: true,
-
                 backgroundColor: gradient,
-
-                borderColor:
-                    window.theme?.primary
-                    ?? '#6D4AFF',
+                borderColor:window.theme?.primary,
 
                 data: @json($dadosMensais)
 
@@ -542,63 +479,12 @@ document.addEventListener("DOMContentLoaded", function () {
         },
 
         options: {
-
             responsive: true,
-
             maintainAspectRatio: false,
-
-            plugins: {
-
-                legend: {
-                    display: false
-                },
-
-                filler: {
-                    propagate: false
-                }
-
-            },
-
-            scales: {
-
-                x: {
-
-                    grid: {
-                        color: "rgba(0,0,0,0.0)"
-                    }
-
-                },
-
-                y: {
-
-                    beginAtZero: true,
-
-                    ticks: {
-                        precision: 0
-                    },
-
-                    grid: {
-                        color: "rgba(0,0,0,0.0)"
-                    }
-
-                }
-
-            }
-
         }
-
     });
 
-
-    /*
-     * GRÁFICO DE ENTREGAS MENSAIS
-     */
-
-    const barCanvas =
-        document.getElementById(
-            "chartjs-dashboard-bar"
-        );
-
+    const barCanvas = document.getElementById("chartjs-dashboard-bar");
 
     new Chart(barCanvas, {
 
@@ -625,76 +511,22 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 label: "Este ano",
 
-                backgroundColor:
-                    window.theme?.primary
-                    ?? '#6D4AFF',
-
-                borderColor:
-                    window.theme?.primary
-                    ?? '#6D4AFF',
-
-                hoverBackgroundColor:
-                    window.theme?.primary
-                    ?? '#6D4AFF',
-
-                hoverBorderColor:
-                    window.theme?.primary
-                    ?? '#6D4AFF',
+                backgroundColor:window.theme?.primary,
+                borderColor:window.theme?.primary,
+                hoverBackgroundColor:window.theme?.primary,
+                hoverBorderColor:window.theme?.primary,
 
                 data: @json($dadosMensais),
-
-                barPercentage: .75,
-
-                categoryPercentage: .5
 
             }]
 
         },
 
         options: {
-
             responsive: true,
-
             maintainAspectRatio: false,
-
-            plugins: {
-
-                legend: {
-                    display: false
-                }
-
-            },
-
-            scales: {
-
-                y: {
-
-                    beginAtZero: true,
-
-                    grid: {
-                        display: false
-                    },
-
-                    ticks: {
-                        precision: 0
-                    }
-
-                },
-
-                x: {
-
-                    grid: {
-                        color: "transparent"
-                    }
-
-                }
-
-            }
-
         }
-
     });
-
 });
 
 </script>

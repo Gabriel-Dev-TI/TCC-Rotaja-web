@@ -5,37 +5,23 @@ namespace App\Http\Controllers;
 use App\Models\Entrega;
 use App\Models\Endereco;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\DB;
 
 class EntregaController extends Controller
 {
-    /*
-    |--------------------------------------------------------------------------
-    | CADASTRAR ENTREGA
-    |--------------------------------------------------------------------------
-    */
-
     public function create()
     {
         $usuario = auth()->user();
 
         $empresa = $usuario->empresa;
 
-        if (!$empresa) {
-            abort(403, 'Empresa não encontrada.');
-        }
-
         $enderecos = collect();
 
-        /*
-         * Endereço principal da empresa
-         */
         if ($empresa->endereco) {
             $enderecos->push($empresa->endereco);
         }
 
-        /*
-         * Outros endereços relacionados à empresa
-         */
         $outrosEnderecos = Endereco::whereHas('empresas', function ($query) use ($empresa) {
 
             $query->where('empresas.id', $empresa->id);
@@ -54,193 +40,222 @@ class EntregaController extends Controller
     }
 
 
-    /*
-    |--------------------------------------------------------------------------
-    | SALVAR ENTREGA
-    |--------------------------------------------------------------------------
-    */
 
-    public function store(Request $request)
-    {
-        $usuario = auth()->user();
+   public function store(Request $request)
+{
+    $dados = $request->validate([
 
-        $empresa = $usuario->empresa;
+        'nome_produto' => [
+            'required',
+            'string',
+            'max:255'
+        ],
 
-        if (!$empresa) {
-            abort(403, 'Empresa não encontrada.');
-        }
+        'endereco_origem_id' => [
+            'required',
+            'integer',
+            'exists:enderecos,id'
+        ],
 
+        'endereco_destino_id' => [
+            'required',
+            'integer',
+            'exists:enderecos,id'
+        ],
 
-        $validated = $request->validate([
+        'altura' => [
+            'required',
+            'numeric',
+            'min:0'
+        ],
 
-            'nome_produto' => [
-                'required',
-                'string',
-                'max:255',
-            ],
+        'largura' => [
+            'required',
+            'numeric',
+            'min:0'
+        ],
 
-            'descricao' => [
-                'nullable',
-                'string',
-                'max:1000',
-            ],
+        'comprimento' => [
+            'required',
+            'numeric',
+            'min:0'
+        ],
 
-            'preco' => [
-                'required',
-                'numeric',
-                'min:0',
-            ],
+        'peso' => [
+            'required',
+            'numeric',
+            'min:0'
+        ],
 
-            'altura' => [
-                'required',
-                'numeric',
-                'min:0',
-            ],
+        'descricao' => [
+            'nullable',
+            'string'
+        ],
 
-            'largura' => [
-                'required',
-                'numeric',
-                'min:0',
-            ],
-
-            'comprimento' => [
-                'required',
-                'numeric',
-                'min:0',
-            ],
-
-            'peso' => [
-                'required',
-                'numeric',
-                'min:0',
-            ],
-
-            'endereco_origem_id' => [
-                'required',
-                'exists:enderecos,id',
-            ],
-
-            'endereco_destino_id' => [
-                'required',
-                'exists:enderecos,id',
-                'different:endereco_origem_id',
-            ],
-
-        ]);
+    ]);
 
 
-        /*
-         * Verifica se os endereços pertencem à empresa.
-         */
+    $origem = Endereco::findOrFail(
+        $dados['endereco_origem_id']
+    );
 
-        $enderecosPermitidos = Endereco::where(function ($query) use ($empresa) {
+    $destino = Endereco::findOrFail(
+        $dados['endereco_destino_id']
+    );
 
-            $query->where(
-                'id',
-                $empresa->endereco_id
-            );
+    if (
+        $origem->latitude === null ||
+        $origem->longitude === null ||
+        $destino->latitude === null ||
+        $destino->longitude === null
+    ) {
 
-            $query->orWhereHas(
-                'empresas',
-                function ($query) use ($empresa) {
-
-                    $query->where(
-                        'empresas.id',
-                        $empresa->id
-                    );
-
-                }
-            );
-
-        })
-        ->pluck('id');
+        return back()
+            ->withInput()
+            ->withErrors([
+                'endereco_origem_id' =>
+                    'Um dos endereços não possui localização válida.'
+            ]);
+    }
 
 
-        if (
-            !$enderecosPermitidos->contains(
-                (int) $validated['endereco_origem_id']
-            )
-            ||
-            !$enderecosPermitidos->contains(
-                (int) $validated['endereco_destino_id']
-            )
-        ) {
-
-            return back()
-                ->withErrors([
-                    'endereco_origem_id' =>
-                        'Um dos endereços selecionados não pertence à empresa.'
-                ])
-                ->withInput();
-        }
+    $url =
+        'https://router.project-osrm.org/route/v1/driving/' .
+        $origem->longitude . ',' .
+        $origem->latitude . ';' .
+        $destino->longitude . ',' .
+        $destino->latitude .
+        '?overview=false';
 
 
-        /*
-         * Cria a entrega
-         */
+    try {
+
+        $response = Http::timeout(10)
+            ->get($url);
+
+    } catch (\Throwable $e) {
+
+        return back()
+            ->withInput()
+            ->withErrors([
+                'endereco_destino_id' =>
+                    'Não foi possível calcular a rota.'
+            ]);
+    }
+
+    if (
+        !$response->successful() ||
+        $response->json('code') !== 'Ok' ||
+        empty($response->json('routes'))
+    ) {
+
+        return back()
+            ->withInput()
+            ->withErrors([
+                'endereco_destino_id' =>
+                    'Não foi encontrada uma rota entre os endereços.'
+            ]);
+    }
+
+
+    $rota = $response->json('routes.0');
+    $distanciaKm =$rota['distance'] / 1000;
+    $tempoMinutos =
+        round($rota['duration'] / 60);
+
+
+    //Volume do produto (divide por 1.000.000 para obter m³)
+    $volume =
+        (
+            $dados['altura'] *
+            $dados['largura'] *
+            $dados['comprimento']
+        ) / 1000000;
+
+    $precoPorKm = 1.50;
+
+    // 50 centavos por kilo
+    $adicionalPeso = $dados['peso'] * 0.50;
+
+    
+    $adicionalVolume = $volume * 50;
+    
+
+    $preco =
+        ($distanciaKm * $precoPorKm) +
+        $adicionalPeso +
+        $adicionalVolume;
+
+    $preco = round($preco, 2);
+
+    DB::transaction(function () use (
+        $dados,
+        $origem,
+        $destino,
+        $distanciaKm,
+        $tempoMinutos,
+        $preco
+    ) {
 
         Entrega::create([
 
-            'empresa_id' => $empresa->id,
-
             'nome_produto' =>
-                $validated['nome_produto'],
-
-            'descricao' =>
-                $validated['descricao'] ?? null,
-
-            'preco' =>
-                $validated['preco'],
-
-            'altura' =>
-                $validated['altura'],
-
-            'largura' =>
-                $validated['largura'],
-
-            'comprimento' =>
-                $validated['comprimento'],
-
-            'peso' =>
-                $validated['peso'],
+                $dados['nome_produto'],
 
             'endereco_origem_id' =>
-                $validated['endereco_origem_id'],
+                $origem->id,
 
             'endereco_destino_id' =>
-                $validated['endereco_destino_id'],
+                $destino->id,
+
+            'altura' =>
+                $dados['altura'],
+
+            'largura' =>
+                $dados['largura'],
+
+            'comprimento' =>
+                $dados['comprimento'],
+
+            'peso' =>
+                $dados['peso'],
+
+            'descricao' =>
+                $dados['descricao'] ?? null,
+
+            'distancia' =>
+                round($distanciaKm, 2),
+
+            'tempo_estimado' =>
+                $tempoMinutos,
+
+            'preco' =>
+                $preco,
 
             'status' =>
                 'pendente',
 
+            'empresa_id' =>
+                auth()->user()->empresa->id,
+
         ]);
 
-
-        return redirect()
-            ->route('empresa.dashboard')
-            ->with(
-                'success',
-                'Entrega cadastrada com sucesso!'
-            );
-    }
+    });
 
 
-    /*
-    |--------------------------------------------------------------------------
-    | ACEITAR ENTREGA
-    |--------------------------------------------------------------------------
-    */
+    return redirect()
+        ->route('empresa.dashboard')
+        ->with(
+            'success',
+            'Entrega cadastrada com sucesso!'
+        );
+}
 
     public function aceitar($id)
     {
         $entrega = Entrega::findOrFail($id);
 
         $entregador = auth()->user()->entregador;
-
-        if (!$entregador) {
-            abort(403, 'Entregador não encontrado.');
-        }
-
         $entrega->update([
 
             'entregador_id' =>
@@ -258,22 +273,12 @@ class EntregaController extends Controller
     }
 
 
-    /*
-    |--------------------------------------------------------------------------
-    | ROTA
-    |--------------------------------------------------------------------------
-    */
 
     public function rota()
     {
         $usuario = auth()->user();
 
         $entregador = $usuario->entregador;
-
-        if (!$entregador) {
-            abort(403, 'Entregador não encontrado.');
-        }
-
 
         $entrega = Entrega::with([
 
@@ -306,13 +311,6 @@ class EntregaController extends Controller
             ]
         );
     }
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | FINALIZAR
-    |--------------------------------------------------------------------------
-    */
 
     public function finalizar(Entrega $entrega)
     {
@@ -364,13 +362,6 @@ class EntregaController extends Controller
             );
     }
 
-
-    /*
-    |--------------------------------------------------------------------------
-    | OBSERVAÇÃO
-    |--------------------------------------------------------------------------
-    */
-
     public function observacao(
         Request $request,
         Entrega $entrega
@@ -419,12 +410,6 @@ class EntregaController extends Controller
         );
     }
 
-
-    /*
-    |--------------------------------------------------------------------------
-    | OCORRÊNCIA
-    |--------------------------------------------------------------------------
-    */
 
     public function ocorrencia(
         Request $request,
@@ -477,13 +462,6 @@ class EntregaController extends Controller
 
         ]);
     }
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | HISTÓRICO
-    |--------------------------------------------------------------------------
-    */
 
     public function historico()
     {

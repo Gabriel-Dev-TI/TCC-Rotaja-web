@@ -10,25 +10,15 @@ use Illuminate\Support\Facades\Auth;
 
 class EnderecoController extends Controller
 {
-    /**
-     * Lista os endereços da empresa.
-     */
+   
     public function index()
     {
         $empresa = Empresa::where('usuario_id', Auth::id())
             ->with('endereco')
             ->firstOrFail();
 
-        /*
-         * Endereço próprio da empresa
-         */
         $enderecoEmpresa = $empresa->endereco;
 
-
-        /*
-         * IDs dos endereços utilizados nas entregas
-         * desta empresa.
-         */
         $idsOrigem = Entrega::where('empresa_id', $empresa->id)
             ->whereNotNull('endereco_origem_id')
             ->pluck('endereco_origem_id');
@@ -37,19 +27,10 @@ class EnderecoController extends Controller
             ->whereNotNull('endereco_destino_id')
             ->pluck('endereco_destino_id');
 
-
-        /*
-         * Junta origem + destino e remove duplicados.
-         */
         $idsEnderecos = $idsOrigem
             ->merge($idsDestino)
             ->unique();
 
-
-        /*
-         * Remove o endereço próprio da empresa
-         * da lista de endereços cadastrados.
-         */
         if ($enderecoEmpresa) {
             $idsEnderecos = $idsEnderecos
                 ->reject(function ($id) use ($enderecoEmpresa) {
@@ -57,10 +38,6 @@ class EnderecoController extends Controller
                 });
         }
 
-
-        /*
-         * Busca os endereços.
-         */
         $enderecos = Endereco::whereIn('id', $idsEnderecos)
             ->orderBy('id', 'desc')
             ->get();
@@ -74,9 +51,6 @@ class EnderecoController extends Controller
     }
 
 
-    /**
-     * Formulário para cadastrar endereço.
-     */
     public function create()
     {
         return view('empresa.endereco-form', [
@@ -84,10 +58,6 @@ class EnderecoController extends Controller
         ]);
     }
 
-
-    /**
-     * Salva um novo endereço.
-     */
     public function store(Request $request)
     {
         $dados = $request->validate([
@@ -159,9 +129,6 @@ class EnderecoController extends Controller
     }
 
 
-    /**
-     * Formulário para editar endereço.
-     */
     public function edit(Endereco $endereco)
     {
         $this->verificarAcesso($endereco);
@@ -169,10 +136,6 @@ class EnderecoController extends Controller
         return view('empresa.endereco-form', compact('endereco'));
     }
 
-
-    /**
-     * Atualiza endereço.
-     */
     public function update(Request $request, Endereco $endereco)
     {
         $this->verificarAcesso($endereco);
@@ -245,18 +208,10 @@ class EnderecoController extends Controller
             ->with('success', 'Endereço atualizado com sucesso.');
     }
 
-
-    /**
-     * Exclui endereço.
-     */
     public function destroy(Endereco $endereco)
     {
         $this->verificarAcesso($endereco);
 
-        /*
-         * O endereço próprio da empresa não pode
-         * ser excluído por esta tela.
-         */
         $empresa = Empresa::where('usuario_id', Auth::id())
             ->firstOrFail();
 
@@ -278,28 +233,15 @@ class EnderecoController extends Controller
     }
 
 
-    /**
-     * Verifica se o endereço pertence às entregas
-     * da empresa logada.
-     */
     private function verificarAcesso(Endereco $endereco)
     {
         $empresa = Empresa::where('usuario_id', Auth::id())
             ->firstOrFail();
 
-
-        /*
-         * Endereço próprio.
-         */
         if ($empresa->endereco_id == $endereco->id) {
             return;
         }
 
-
-        /*
-         * Verifica se o endereço é utilizado
-         * em alguma entrega da empresa.
-         */
         $pertence = Entrega::where('empresa_id', $empresa->id)
             ->where(function ($query) use ($endereco) {
 

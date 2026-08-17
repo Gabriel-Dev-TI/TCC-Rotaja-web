@@ -10,9 +10,7 @@ use Illuminate\View\View;
 
 class ProfileController extends Controller
 {
-    /**
-     * Visualizar perfil
-     */
+
     public function show(Request $request): View
     {
         return view('profile.show', [
@@ -20,9 +18,6 @@ class ProfileController extends Controller
         ]);
     }
 
-    /**
-     * Editar perfil
-     */
     public function edit(Request $request): View
     {
         return view('profile.edit', [
@@ -30,9 +25,6 @@ class ProfileController extends Controller
         ]);
     }
 
-    /**
-     * Atualizar perfil
-     */
     public function update(Request $request): RedirectResponse
     {
         $request->validate([
@@ -68,9 +60,6 @@ class ProfileController extends Controller
             ->with('status', 'profile-updated');
     }
 
-    /**
-     * Excluir conta
-     */
     public function destroy(Request $request): RedirectResponse
     {
         $request->validateWithBag('userDeletion', [

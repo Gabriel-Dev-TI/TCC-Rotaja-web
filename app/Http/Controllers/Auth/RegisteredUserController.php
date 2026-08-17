@@ -45,7 +45,7 @@ class RegisteredUserController extends Controller
             'tipo' => ['required','in:empresa,entregador',],
 
             // EMPRESA
-            'cnpj' => ['required_if:tipo,empresa','nullable','string','max:18',],
+            'cnpj' => ['required_if:tipo,empresa','nullable','string','max:18','unique:' . Empresa::class,],
             'logradouro' => ['required_if:tipo,empresa','nullable','string','max:255',],
             'numero' => ['required_if:tipo,empresa','nullable','string','max:20',],
             'bairro' => ['required_if:tipo,empresa','nullable','string','max:255',],
@@ -55,11 +55,12 @@ class RegisteredUserController extends Controller
             'complemento' => ['nullable','string','max:255',],
 
             // ENTREGADOR
-            'cpf' => ['required_if:tipo,entregador','nullable','string','max:14',],
+            'cpf' => ['required_if:tipo,entregador','nullable','string','max:14','unique:' . Entregador::class,],
             'tipo_veiculo' => ['required_if:tipo,entregador','nullable','string','max:50',],
         ]);
 
         //Se for empresa verifica antes de cadastrar se o endereço possui cordenadas
+        $coordenadas = null;
         if ($request->tipo === 'empresa') {
 
             // Formata o endereço para o ArcGIS
@@ -83,8 +84,6 @@ class RegisteredUserController extends Controller
                         'f' => 'json',
                     ]
                 );
-
-            $coordenadas = null;
 
             if ($resposta->successful()) {
 

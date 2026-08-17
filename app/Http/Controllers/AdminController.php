@@ -11,11 +11,6 @@ use Carbon\Carbon;
 
 class AdminController extends Controller
 {
-    /*
-    |--------------------------------------------------------------------------
-    | DASHBOARD
-    |--------------------------------------------------------------------------
-    */
 
     public function index()
     {
@@ -24,12 +19,6 @@ class AdminController extends Controller
         $totalEmpresas = Empresa::count();
 
         $totalEntregadores = Entregador::count();
-
-        /*
-        |--------------------------------------------------------------------------
-        | ÚLTIMAS ENTREGAS
-        |--------------------------------------------------------------------------
-        */
 
         $ultimasEntregas = Entrega::with([
             'empresa.usuario',
@@ -40,15 +29,6 @@ class AdminController extends Controller
             ->latest()
             ->take(8)
             ->get();
-
-        /*
-        |--------------------------------------------------------------------------
-        | ENTREGAS POR MÊS
-        |--------------------------------------------------------------------------
-        |
-        | Retorna a quantidade de entregas de cada mês do ano atual.
-        |
-        */
 
         $anoAtual = now()->year;
 
@@ -61,30 +41,11 @@ class AdminController extends Controller
             ->orderBy('mes')
             ->pluck('total', 'mes');
 
-        /*
-        |--------------------------------------------------------------------------
-        | MONTA OS 12 MESES
-        |--------------------------------------------------------------------------
-        |
-        | Mesmo que determinado mês não tenha nenhuma entrega,
-        | ele continua aparecendo com valor 0.
-        |
-        */
-
         $entregasMensais = [];
 
         for ($mes = 1; $mes <= 12; $mes++) {
             $entregasMensais[] = $entregasPorMes->get($mes, 0);
         }
-
-        /*
-        |--------------------------------------------------------------------------
-        | ENTREGAS DOS ÚLTIMOS 12 MESES
-        |--------------------------------------------------------------------------
-        |
-        | Usado no gráfico de linha.
-        |
-        */
 
         $inicioPeriodo = now()
             ->subMonths(11)
@@ -103,12 +64,6 @@ class AdminController extends Controller
             ->orderBy('ano')
             ->orderBy('mes')
             ->get();
-
-        /*
-        |--------------------------------------------------------------------------
-        | PREENCHE OS ÚLTIMOS 12 MESES
-        |--------------------------------------------------------------------------
-        */
 
         $labelsMovimentacoes = [];
         $dadosMovimentacoes = [];
@@ -133,12 +88,6 @@ class AdminController extends Controller
                 : 0;
         }
 
-        /*
-        |--------------------------------------------------------------------------
-        | DADOS PARA A VIEW
-        |--------------------------------------------------------------------------
-        */
-
         return view('admin.dashboard', [
 
             'totalEntregas' => $totalEntregas,
@@ -159,12 +108,6 @@ class AdminController extends Controller
     }
 
 
-    /*
-    |--------------------------------------------------------------------------
-    | ENTREGADORES
-    |--------------------------------------------------------------------------
-    */
-
     public function entregadores()
     {
         $entregadores = Entregador::with('usuario')
@@ -174,12 +117,6 @@ class AdminController extends Controller
         return view('admin.entregador', compact('entregadores'));
     }
 
-
-    /*
-    |--------------------------------------------------------------------------
-    | EMPRESAS
-    |--------------------------------------------------------------------------
-    */
 
     public function empresas()
     {
@@ -192,13 +129,6 @@ class AdminController extends Controller
 
         return view('admin.empresa', compact('empresas'));
     }
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | ENTREGAS
-    |--------------------------------------------------------------------------
-    */
 
     public function entregas()
     {
@@ -213,13 +143,6 @@ class AdminController extends Controller
 
         return view('admin.entrega', compact('entregas'));
     }
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | CRIAR ENTREGADOR
-    |--------------------------------------------------------------------------
-    */
 
     public function storeEntregador(Request $request)
     {
@@ -256,13 +179,6 @@ class AdminController extends Controller
             ->with('success', 'Entregador cadastrado com sucesso.');
     }
 
-
-    /*
-    |--------------------------------------------------------------------------
-    | EXCLUIR ENTREGADOR
-    |--------------------------------------------------------------------------
-    */
-
     public function destroyEntregador(Entregador $entregador)
     {
         $usuario = $entregador->usuario;
@@ -279,13 +195,6 @@ class AdminController extends Controller
         );
     }
 
-
-    /*
-    |--------------------------------------------------------------------------
-    | EXCLUIR EMPRESA
-    |--------------------------------------------------------------------------
-    */
-
     public function destroyEmpresa(Empresa $empresa)
     {
         $usuario = $empresa->usuario;
@@ -301,13 +210,6 @@ class AdminController extends Controller
             'Empresa removida com sucesso.'
         );
     }
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | EXCLUIR ENTREGA
-    |--------------------------------------------------------------------------
-    */
 
     public function destroyEntrega(Entrega $entrega)
     {

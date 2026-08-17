@@ -73,9 +73,6 @@
 
             <div class="row">
 
-
-                {{-- LOGRADOURO --}}
-
                 <div class="col-md-8 mb-3">
 
                     <label class="form-label">
@@ -91,9 +88,6 @@
                     >
 
                 </div>
-
-
-                {{-- NÚMERO --}}
 
                 <div class="col-md-4 mb-3">
 
@@ -111,9 +105,6 @@
 
                 </div>
 
-
-                {{-- BAIRRO --}}
-
                 <div class="col-md-6 mb-3">
 
                     <label class="form-label">
@@ -130,9 +121,6 @@
 
                 </div>
 
-
-                {{-- CIDADE --}}
-
                 <div class="col-md-6 mb-3">
 
                     <label class="form-label">
@@ -148,9 +136,6 @@
                     >
 
                 </div>
-
-
-                {{-- ESTADO --}}
 
                 <div class="col-md-4 mb-3">
 
@@ -170,9 +155,6 @@
 
                 </div>
 
-
-                {{-- CEP --}}
-
                 <div class="col-md-4 mb-3">
 
                     <label class="form-label">
@@ -191,9 +173,6 @@
 
                 </div>
 
-
-                {{-- COMPLEMENTO --}}
-
                 <div class="col-md-4 mb-3">
 
                     <label class="form-label">
@@ -209,9 +188,6 @@
 
                 </div>
 
-
-                {{-- LATITUDE --}}
-
                 <div class="col-md-6 mb-3">
 
                     <label class="form-label">
@@ -226,9 +202,6 @@
                     >
 
                 </div>
-
-
-                {{-- LONGITUDE --}}
 
                 <div class="col-md-6 mb-3">
 

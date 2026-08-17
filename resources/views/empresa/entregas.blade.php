@@ -37,14 +37,13 @@
 
             <form
                 method="POST"
-                action="{{ route('entregas.store') }}"
+                action="{{ route('empresa.entregas.store') }}"
             >
 
                 @csrf
 
                 <div class="row">
 
-                    {{-- NOME DO PRODUTO --}}
                     <div class="col-md-8 mb-3">
 
                         <label for="nome_produto" class="form-label">
@@ -63,38 +62,6 @@
 
                     </div>
 
-
-                    {{-- PREÇO --}}
-                    <div class="col-md-4 mb-3">
-
-                        <label for="preco" class="form-label">
-                            Preço da entrega
-                        </label>
-
-                        <div class="input-group">
-
-                            <span class="input-group-text">
-                                R$
-                            </span>
-
-                            <input
-                                type="number"
-                                id="preco"
-                                name="preco"
-                                class="form-control"
-                                value="{{ old('preco') }}"
-                                placeholder="0,00"
-                                min="0"
-                                step="0.01"
-                                required
-                            >
-
-                        </div>
-
-                    </div>
-
-
-                    {{-- ORIGEM --}}
                     <div class="col-md-6 mb-3">
 
                         <label
@@ -136,8 +103,6 @@
 
                     </div>
 
-
-                    {{-- DESTINO --}}
                     <div class="col-md-6 mb-3">
 
                         <label
@@ -179,9 +144,6 @@
 
                     </div>
 
-
-                    {{-- DIMENSÕES --}}
-
                     <div class="col-12 mt-2 mb-2">
 
                         <h5 class="mb-1">
@@ -189,13 +151,11 @@
                         </h5>
 
                         <p class="text-muted small mb-3">
-                            Informe as medidas em centímetros.
+                            Informe as medidas aproximadas do produto.
                         </p>
 
                     </div>
 
-
-                    {{-- ALTURA --}}
                     <div class="col-md-4 mb-3">
 
                         <label for="altura" class="form-label">
@@ -224,8 +184,6 @@
 
                     </div>
 
-
-                    {{-- LARGURA --}}
                     <div class="col-md-4 mb-3">
 
                         <label for="largura" class="form-label">
@@ -254,8 +212,6 @@
 
                     </div>
 
-
-                    {{-- COMPRIMENTO --}}
                     <div class="col-md-4 mb-3">
 
                         <label for="comprimento" class="form-label">
@@ -284,8 +240,6 @@
 
                     </div>
 
-
-                    {{-- PESO --}}
                     <div class="col-md-4 mb-3">
 
                         <label for="peso" class="form-label">
@@ -314,12 +268,10 @@
 
                     </div>
 
-
-                    {{-- DESCRIÇÃO --}}
                     <div class="col-12 mb-3">
 
                         <label for="descricao" class="form-label">
-                            Descrição do produto
+                            Descrição do produto (Opcional)
                         </label>
 
                         <textarea
@@ -333,9 +285,6 @@
                     </div>
 
                 </div>
-
-
-                {{-- BOTÕES --}}
 
                 <div class="d-flex justify-content-end gap-2 mt-3">
 

@@ -115,8 +115,6 @@
 
                     <tr>
 
-                        {{-- PRODUTO --}}
-
                         <td>
 
                             <strong>
@@ -125,26 +123,17 @@
 
                         </td>
 
-
-                        {{-- DATA --}}
-
                         <td class="d-none d-xl-table-cell">
 
                             {{ $entrega->created_at->format('d/m/Y') }}
 
                         </td>
 
-
-                        {{-- EMPRESA --}}
-
                         <td class="d-none d-md-table-cell">
 
                             {{ $entrega->empresa->usuario->nome ?? '—' }}
 
                         </td>
-
-
-                        {{-- STATUS --}}
 
                         <td>
 
@@ -155,9 +144,6 @@
                             </span>
 
                         </td>
-
-
-                        {{-- ENTREGADOR --}}
 
                         <td class="d-none d-xl-table-cell">
 
@@ -204,15 +190,3 @@
 
 @endsection
 
-
-@push('scripts')
-
-<script>
-
-    if (typeof feather !== 'undefined') {
-        feather.replace();
-    }
-
-</script>
-
-@endpush

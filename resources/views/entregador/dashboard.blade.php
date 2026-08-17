@@ -5,21 +5,18 @@
 <div class="d-flex justify-content-between align-items-center mb-4">
 
     <div>
+
         <h1 class="h3 mb-1">
             Painel de <strong>Entregas</strong>
         </h1>
 
         <p class="text-muted mb-0">
-            Olá, {{ $usuario->nome }}.
+            Visualize e gerencie as entregas disponíveis.
         </p>
+
     </div>
 
 </div>
-
-
-{{-- =========================================================
-    ENTREGAS DISPONÍVEIS
-========================================================= --}}
 
 <div class="row">
 
@@ -30,7 +27,7 @@
             <div class="card-header">
 
                 <h5 class="card-title mb-0">
-                    Entregas Disponíveis
+                    Entregas disponíveis
                 </h5>
 
             </div>
@@ -44,10 +41,8 @@
 
                         <tr>
 
-                            <th>Nome</th>
-
-                            <th class="d-none d-xl-table-cell">
-                                Data
+                            <th>
+                                Produto
                             </th>
 
                             <th class="d-none d-md-table-cell">
@@ -55,10 +50,23 @@
                             </th>
 
                             <th>
-                                Status
+                                Distância
+                            </th>
+
+                            <th>
+                                Preço
                             </th>
 
                             <th class="d-none d-xl-table-cell">
+                                Data
+                            </th>
+
+                            <th>
+                                Status
+                            </th>
+
+                            <th>
+                                Ação
                             </th>
 
                         </tr>
@@ -72,31 +80,65 @@
 
                             <tr>
 
-                                {{-- PRODUTO --}}
                                 <td>
 
-                                    {{ $entrega->nome ?? $entrega->produto ?? 'Entrega' }}
+                                    {{ $entrega->nome_produto ?? 'Entrega' }}
 
                                 </td>
 
+                                <td class="d-none d-md-table-cell">
 
-                                {{-- DATA --}}
+                                    {{ $entrega->empresa?->usuario?->nome
+                                        ?? 'Empresa' }}
+
+                                </td>
+
+                                <td>
+
+                                    @if($entrega->distancia !== null)
+
+                                        {{ number_format(
+                                            $entrega->distancia,
+                                            1,
+                                            ',',
+                                            '.'
+                                        ) }}
+                                        km
+
+                                    @else
+
+                                        -
+
+                                    @endif
+
+                                </td>
+
+                                <td>
+
+                                    @if($entrega->preco !== null)
+
+                                        R$
+                                        {{ number_format(
+                                            $entrega->preco,
+                                            2,
+                                            ',',
+                                            '.'
+                                        ) }}
+
+                                    @else
+
+                                        -
+
+                                    @endif
+
+                                </td>
+
                                 <td class="d-none d-xl-table-cell">
 
                                     {{ $entrega->created_at?->format('d/m/Y') }}
 
                                 </td>
 
-
-                                {{-- EMPRESA --}}
-                                <td class="d-none d-md-table-cell">
-
-                                    {{ $entrega->empresa?->usuario?->nome ?? 'Empresa' }}
-
-                                </td>
-
-
-                                {{-- STATUS --}}
                                 <td>
 
                                     @switch($entrega->status)
@@ -121,7 +163,7 @@
 
                                         @case('em_transito')
 
-                                            <span class="badge bg-warning">
+                                            <span class="badge bg-primary">
                                                 Em trânsito
                                             </span>
 
@@ -137,54 +179,130 @@
                                             @break
 
 
+                                        @case('cancelado')
+
+                                            <span class="badge bg-danger">
+                                                Cancelada
+                                            </span>
+
+                                            @break
+
+
                                         @default
 
                                             <span class="badge bg-secondary">
+
                                                 {{ ucfirst($entrega->status) }}
+
                                             </span>
 
                                     @endswitch
 
                                 </td>
 
-
-                                {{-- AÇÃO --}}
-                                <td class="d-none d-xl-table-cell">
+                                <td>
 
                                     @if($entrega->status === 'pendente')
 
-                                        <form
-                                            method="POST"
-                                            action="{{ route('entregador.entrega.aceitar', $entrega->id) }}"
-                                        >
+                                        @if(
+                                            !$entrega->entregador_id ||
+                                            $entrega->entregador_id === auth()->user()->entregador?->id
+                                        )
 
-                                            @csrf
+                                            <form
+                                                method="POST"
+                                                action="{{ route(
+                                                    'entregador.entrega.aceitar',
+                                                    $entrega->id
+                                                ) }}"
+                                            >
+
+                                                @csrf
+
+                                                <button
+                                                    type="submit"
+                                                    class="btn btn-success btn-sm"
+                                                >
+
+                                                    <i
+                                                        data-feather="check"
+                                                        class="align-middle me-1"
+                                                    ></i>
+
+                                                    Aceitar
+
+                                                </button>
+
+                                            </form>
+
+                                        @else
 
                                             <button
-                                                type="submit"
-                                                class="btn btn-success btn-sm"
+                                                type="button"
+                                                class="btn btn-secondary btn-sm"
+                                                disabled
                                             >
-                                                Aceitar
+
+                                                Indisponível
+
                                             </button>
 
-                                        </form>
+                                        @endif
 
-                                    @elseif($entrega->status === 'aceita')
 
-                                        <span class="btn btn-secondary btn-sm">
-                                            Aceita
+                                    @elseif(
+                                        $entrega->status === 'aceita' ||
+                                        $entrega->status === 'em_transito'
+                                    )
+
+                                        @if(
+                                            $entrega->entregador_id ===
+                                            auth()->user()->entregador?->id
+                                        )
+
+                                            <a
+                                                href="{{ route(
+                                                    'rota',
+                                                    $entrega->id
+                                                ) }}"
+                                                class="btn btn-primary btn-sm"
+                                            >
+
+                                                <i
+                                                    data-feather="map"
+                                                    class="align-middle me-1"
+                                                ></i>
+
+                                                Ir para rota
+
+                                            </a>
+
+                                        @else
+
+                                            <button
+                                                type="button"
+                                                class="btn btn-secondary btn-sm"
+                                                disabled
+                                            >
+
+                                                Indisponível
+
+                                            </button>
+
+                                        @endif
+
+
+                                    @elseif($entrega->status === 'concluido')
+
+                                        <span class="text-muted small">
+                                            Finalizada
                                         </span>
 
-                                    @elseif($entrega->status === 'em_transito')
 
-                                        <span class="btn btn-secondary btn-sm">
-                                            Em andamento
-                                        </span>
+                                    @elseif($entrega->status === 'cancelado')
 
-                                    @else
-
-                                        <span class="text-muted">
-                                            -
+                                        <span class="text-muted small">
+                                            Cancelada
                                         </span>
 
                                     @endif
@@ -198,11 +316,31 @@
                             <tr>
 
                                 <td
-                                    colspan="5"
-                                    class="text-center text-muted py-4"
+                                    colspan="7"
+                                    class="text-center text-muted py-5"
                                 >
 
-                                    Nenhuma entrega disponível.
+                                    <div>
+
+                                        <i
+                                            data-feather="package"
+                                            style="
+                                                width: 45px;
+                                                height: 45px;
+                                            "
+                                            class="mb-3"
+                                        ></i>
+
+                                        <h5>
+                                            Nenhuma entrega disponível
+                                        </h5>
+
+                                        <p class="mb-0">
+                                            No momento não existem entregas
+                                            disponíveis para aceitar.
+                                        </p>
+
+                                    </div>
 
                                 </td>
 
@@ -222,150 +360,16 @@
 
 </div>
 
+<div class="row mt-4">
 
-
-{{-- =========================================================
-    ESTATÍSTICAS
-========================================================= --}}
-
-<div class="row">
-
-
-    {{-- ENTREGAS --}}
-    <div class="col-xl-6 col-xxl-6 d-flex">
-
-        <div class="w-100">
-
-            <div class="row">
-
-
-                <div class="col-12">
-
-                    <div class="card">
-
-                        <div class="card-body">
-
-                            <div class="row">
-
-                                <div class="col mt-0">
-
-                                    <h5 class="card-title">
-                                        Entregas
-                                    </h5>
-
-                                </div>
-
-
-                                <div class="col-auto">
-
-                                    <div class="stat text-primary">
-
-                                        <i
-                                            class="align-middle"
-                                            data-feather="truck"
-                                        ></i>
-
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-
-                            <h1 class="mt-1 mb-3">
-                                {{ $totalEntregas }}
-                            </h1>
-
-
-                            <div class="mb-0">
-
-                                <span class="text-muted">
-                                    Total de entregas
-                                </span>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-
-                {{-- ENTREGAS CONCLUÍDAS --}}
-                <div class="col-12">
-
-                    <div class="card">
-
-                        <div class="card-body">
-
-                            <div class="row">
-
-                                <div class="col mt-0">
-
-                                    <h5 class="card-title">
-                                        Entregas concluídas
-                                    </h5>
-
-                                </div>
-
-
-                                <div class="col-auto">
-
-                                    <div class="stat text-success">
-
-                                        <i
-                                            class="align-middle"
-                                            data-feather="check-circle"
-                                        ></i>
-
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-
-                            <h1 class="mt-1 mb-3">
-                                {{ $entregasConcluidas->count() }}
-                            </h1>
-
-
-                            <div class="mb-0">
-
-                                <span class="text-muted">
-                                    Entregas finalizadas
-                                </span>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-
-
-    {{-- =====================================================
-        RESUMO
-    ====================================================== --}}
-
-    <div class="col-xl-6 col-xxl-6">
+    <div class="col-12 d-flex">
 
         <div class="card flex-fill w-100">
 
             <div class="card-header">
 
                 <h5 class="card-title mb-0">
-                    Resumo das entregas
+                    Entregas realizadas
                 </h5>
 
             </div>
@@ -373,85 +377,16 @@
 
             <div class="card-body">
 
-                <div class="mb-4">
+                <div
+                    style="
+                        position: relative;
+                        height: 300px;
+                    "
+                >
 
-                    <div class="d-flex justify-content-between mb-2">
-
-                        <span>
-                            Pendentes
-                        </span>
-
-                        <strong>
-                            {{ $entregasDisponiveis->count() }}
-                        </strong>
-
-                    </div>
-
-                    <div class="progress">
-
-                        <div
-                            class="progress-bar bg-warning"
-                            role="progressbar"
-                            style="width: {{ $totalEntregas > 0 ? ($entregasDisponiveis->count() / $totalEntregas) * 100 : 0 }}%"
-                        ></div>
-
-                    </div>
-
-                </div>
-
-
-
-                <div class="mb-4">
-
-                    <div class="d-flex justify-content-between mb-2">
-
-                        <span>
-                            Em andamento
-                        </span>
-
-                        <strong>
-                            {{ $entregasAceitas->count() }}
-                        </strong>
-
-                    </div>
-
-                    <div class="progress">
-
-                        <div
-                            class="progress-bar bg-info"
-                            role="progressbar"
-                            style="width: {{ $totalEntregas > 0 ? ($entregasAceitas->count() / $totalEntregas) * 100 : 0 }}%"
-                        ></div>
-
-                    </div>
-
-                </div>
-
-
-
-                <div>
-
-                    <div class="d-flex justify-content-between mb-2">
-
-                        <span>
-                            Concluídas
-                        </span>
-
-                        <strong>
-                            {{ $entregasConcluidas->count() }}
-                        </strong>
-
-                    </div>
-
-                    <div class="progress">
-
-                        <div
-                            class="progress-bar bg-success"
-                            role="progressbar"
-                            style="width: {{ $totalEntregas > 0 ? ($entregasConcluidas->count() / $totalEntregas) * 100 : 0 }}%"
-                        ></div>
-
-                    </div>
+                    <canvas
+                        id="chartjs-entregas"
+                    ></canvas>
 
                 </div>
 
@@ -463,16 +398,109 @@
 
 </div>
 
-@endsection
 
+@endsection
 
 @push('scripts')
 
 <script>
 
-    if (typeof feather !== 'undefined') {
-        feather.replace();
+document.addEventListener("DOMContentLoaded", function () {
+
+    const canvas =
+        document.getElementById('chartjs-entregas');
+
+    if (!canvas) {
+        return;
     }
+
+
+    new Chart(canvas, {
+
+        type: 'line',
+
+        data: {
+
+            labels: [
+                'Jan',
+                'Fev',
+                'Mar',
+                'Abr',
+                'Mai',
+                'Jun',
+                'Jul',
+                'Ago',
+                'Set',
+                'Out',
+                'Nov',
+                'Dez'
+            ],
+
+            datasets: [{
+
+                label: 'Entregas concluídas',
+
+                data: @json($dadosMensais),
+
+                borderColor:
+                    window.theme?.primary,
+
+                backgroundColor:
+                    'transparent',
+
+                tension: 0.3,
+
+                borderWidth: 2,
+
+                pointRadius: 4,
+
+                pointHoverRadius: 6
+
+            }]
+
+        },
+
+
+        options: {
+
+            responsive: true,
+
+            maintainAspectRatio: false,
+
+            scales: {
+
+                y: {
+
+                    beginAtZero: true,
+
+                    min: 0,
+
+                    ticks: {
+
+                        precision: 0
+
+                    }
+
+                }
+
+            },
+
+
+            plugins: {
+
+                legend: {
+
+                    display: false
+
+                }
+
+            }
+
+        }
+
+    });
+
+});
 
 </script>
 
