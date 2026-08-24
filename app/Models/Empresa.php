@@ -14,7 +14,6 @@ class Empresa extends Model
     protected $fillable = [
         'cnpj',
         'usuario_id',
-        'endereco_id',
     ];
 
     public function usuario()
@@ -22,9 +21,9 @@ class Empresa extends Model
         return $this->belongsTo(User::class, 'usuario_id');
     }
 
-    public function endereco()
+    public function enderecos()
     {
-        return $this->belongsTo(Endereco::class, 'endereco_id');
+        return $this->hasMany(Endereco::class, 'empresa_id');
     }
 
     public function entregas()

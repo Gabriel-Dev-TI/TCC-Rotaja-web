@@ -2,52 +2,6 @@
 
 @section('content')
 
-@php
-    $usuario = auth()->user();
-
-    $cargo = $usuario->cargo;
-
-    $nomeCargo = match ($cargo) {
-        'admin' => 'Administrador',
-        'empresa' => 'Empresa',
-        'entregador' => 'Entregador',
-        default => ucfirst($cargo),
-    };
-
-    $inicial = strtoupper(substr($usuario->nome ?? 'U', 0, 1));
-
-    $empresa = $cargo === 'empresa'
-        ? $usuario->empresa
-        : null;
-
-    $entregador = $cargo === 'entregador'
-        ? $usuario->entregador
-        : null;
-
-    $endereco = $empresa?->endereco;
-
-    $enderecoFormatado = $endereco
-        ? trim(
-            ($endereco->logradouro ?? '') .
-            (isset($endereco->numero) ? ', ' . $endereco->numero : '') .
-            (!empty($endereco->bairro) ? ' - ' . $endereco->bairro : '') .
-            (!empty($endereco->cidade) ? ' - ' . $endereco->cidade : '') .
-            (!empty($endereco->estado) ? '/' . $endereco->estado : '')
-        )
-        : null;
-
-    $entregasRealizadas = $entregador?->entregas
-        ? $entregador->entregas->where('status', 'concluido')->count()
-        : 0;
-
-    $entregasAndamento = $entregador?->entregas
-        ? $entregador->entregas->where('status', 'em_transito')->count()
-        : 0;
-
-    $entregasEmpresa = $empresa?->entregas?->count() ?? 0;
-@endphp
-
-
 <div class="d-flex justify-content-between align-items-center mb-3">
 
     <div>

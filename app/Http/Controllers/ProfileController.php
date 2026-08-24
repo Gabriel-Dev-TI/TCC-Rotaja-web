@@ -13,8 +13,49 @@ class ProfileController extends Controller
 
     public function show(Request $request): View
     {
+        $usuario = $request->user();
+
+        $cargo = $usuario->cargo;
+
+        $nomeCargo = match ($cargo) {
+            'admin' => 'Administrador',
+            'empresa' => 'Empresa',
+            'entregador' => 'Entregador',
+        };
+
+        $inicial = strtoupper(substr($usuario->nome, 0, 1));
+
+        $empresa = $cargo === 'empresa'
+            ? $usuario->empresa
+            : null;
+
+        $entregador = $cargo === 'entregador'
+            ? $usuario->entregador
+            : null;
+
+        $endereco = $empresa?->enderecos
+            ? $empresa->enderecos->where('tipo', 'proprio')->first()
+            : null;
+
+        $enderecoFormatado = $endereco
+            ? trim(
+                ($endereco->logradouro ?? '') .
+                (isset($endereco->numero) ? ', ' . $endereco->numero : '') .
+                (!empty($endereco->bairro) ? ' - ' . $endereco->bairro : '') .
+                (!empty($endereco->cidade) ? ' - ' . $endereco->cidade : '') .
+                (!empty($endereco->estado) ? '/' . $endereco->estado : '')
+            )
+            : null;
+
         return view('profile.show', [
-            'user' => $request->user(),
+            'usuario' => $usuario,
+            'cargo' => $cargo,
+            'nomeCargo' => $nomeCargo,
+            'inicial' => $inicial,
+            'empresa' => $empresa,
+            'entregador' => $entregador,
+            'endereco' => $endereco,
+            'enderecoFormatado' => $enderecoFormatado,
         ]);
     }
 

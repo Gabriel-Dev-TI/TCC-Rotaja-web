@@ -159,7 +159,14 @@ class RegisteredUserController extends Controller
 
             if ($request->tipo === 'empresa') {
 
-                $endereco = Endereco::create([
+                $empresa = Empresa::create([
+                        'usuario_id' => $usuario->id,
+                        'cnpj' => $request->cnpj,
+                ]);
+
+                Endereco::create([
+                    'empresa_id' => $empresa->id,
+                    'tipo' => 'proprio',
                     'logradouro' => $request->logradouro,
                     'numero' => $request->numero,
                     'bairro' => $request->bairro,
@@ -171,11 +178,6 @@ class RegisteredUserController extends Controller
                     'longitude' => $coordenadas['longitude'],
                 ]);
 
-                Empresa::create([
-                    'usuario_id' => $usuario->id,
-                    'cnpj' => $request->cnpj,
-                    'endereco_id' => $endereco->id,
-                ]);
             }
 
             if ($request->tipo === 'entregador') {

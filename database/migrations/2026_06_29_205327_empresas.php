@@ -12,7 +12,6 @@ return new class extends Migration
         $table->id();
         $table->string('cnpj', 18)->unique();
         $table->foreignId('usuario_id')->constrained('usuarios')->onDelete('cascade');
-        $table->foreignId('endereco_id')->constrained('enderecos')->onDelete('cascade');
         $table->timestamps();
         $table->softDeletes();
     });

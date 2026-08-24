@@ -12,6 +12,7 @@ class Endereco extends Model
     protected $table = 'enderecos';
 
     protected $fillable = [
+        'empresa_id',
         'logradouro',
         'numero',
         'bairro',
@@ -21,11 +22,12 @@ class Endereco extends Model
         'complemento',
         'latitude',
         'longitude',
+        'tipo',
     ];
 
-    public function empresas()
+    public function empresa()
     {
-        return $this->hasMany(Empresa::class, 'endereco_id');
+        return $this->belongsTo(Empresa::class, 'empresa_id');
     }
 
     public function entregasOrigem()

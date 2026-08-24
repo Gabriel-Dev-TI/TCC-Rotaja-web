@@ -20,6 +20,8 @@ return new class extends Migration
         $table->string('complemento')->nullable();
         $table->decimal('latitude',10,7)->nullable();
         $table->decimal('longitude',10,7)->nullable();
+        $table->enum('tipo', ['proprio','entrega']);
+        $table->foreignId('empresa_id')->constrained('empresas')->cascadeOnDelete();
         $table->timestamps();
         $table->softDeletes();
     });
