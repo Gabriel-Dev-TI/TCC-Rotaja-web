@@ -15,6 +15,7 @@ return new class extends Migration
         $table->decimal('preco', 10, 2);
         $table->decimal('largura', 10, 2);
         $table->decimal('altura', 10, 2);
+        $table->decimal('comprimento', 10, 2);
         $table->decimal('peso', 10, 2);
         $table->decimal('distancia',8,2)->nullable();
         $table->integer('tempo_estimado_minutos')->nullable();
