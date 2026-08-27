@@ -14,6 +14,7 @@ class Entrega extends Model
 
     protected $fillable = [
     'nome_produto',
+    'comprimento',
     'descricao',
     'status',
     'preco',

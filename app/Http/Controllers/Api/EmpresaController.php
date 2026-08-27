@@ -10,9 +10,47 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
 
 class EmpresaController extends Controller
 {
+    public function endereco(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'logradouro'  => 'required|string|max:255',
+            'numero'      => 'required|string',
+            'bairro'      => 'required|string|max:255',
+            'cidade'      => 'required|string|max:255',
+            'estado'      => 'required|string',
+            'cep'         => 'required|string|max:9',
+            'complemento' => 'nullable|string|max:255',
+            'latitude'    => 'nullable|numeric',
+            'longitude'   => 'nullable|numeric',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'sucesso'  => false,
+                'mensagem' => $validator->errors()->first()
+            ], 422);
+        }
+
+        $dados = $validator->validated();
+        $usuario = Auth::user();
+        $empresa = $usuario->empresa;
+        
+        $endereco = DB::transaction(function () use ($dados, $empresa) {
+            $dadosEndereco = array_merge($dados, [
+                'empresa_id' => $empresa->id,
+                'tipo'       => 'entrega',
+            ]);
+
+            return Endereco::create($dadosEndereco);
+        });
+
+        return response()->json(['sucesso' => true, 'dados' => $endereco], 201);
+    }
+
     public function index()
     {
         return response()->json(['sucesso' => true, 'dados' => Empresa::with(['usuario', 'endereco'])->get()]);
@@ -24,7 +62,7 @@ class EmpresaController extends Controller
         // Dados da Empresa 
         'nome' => 'required|string|max:255',
         'email' => 'required|email|unique:usuarios,email',
-        'senha' => 'required|string|min:6',
+        'senha' => 'required|string|min:8',
         'telefone' => 'required|string',
         'cnpj' => 'required|string|unique:empresas,cnpj',
         
@@ -37,6 +75,8 @@ class EmpresaController extends Controller
         'endereco.estado' => 'required|string',
         'endereco.cep' => 'required|string|max:9',
         'endereco.complemento' => 'nullable|string|max:255',
+        'endereco.latitude'    => 'nullable|numeric',
+        'endereco.longitude'   => 'nullable|numeric',
     ]);
 
     if ($validator->fails()) {
@@ -59,22 +99,28 @@ class EmpresaController extends Controller
             'cargo' => 'empresa',
         ]);
 
-        // Cria o endereco
-        $endereco = Endereco::create($dados['endereco']);
-
         // Cria a empresa
         $empresa = Empresa::create([
             'cnpj' => $dados['cnpj'],
-            'endereco_id' => $endereco->id,
             'usuario_id' => $usuario->id,
         ]);
 
+        $dadosEndereco = array_merge($dados['endereco'], [
+            'empresa_id' => $empresa->id,
+            'tipo' => 'proprio',
+        ]);
+
+        // Cria o endereço 
+        $endereco = Endereco::create($dadosEndereco);
+
         $token = $usuario->createToken('flutter')->plainTextToken;
+
+        $usuario->load('empresa.enderecos');
 
         return response()->json([
             'sucesso' => true,
-            'mensagem' => 'Empresa cadastrada com sucesso!',
-            'token' => $token
+            'token' => $token,
+            'usuario' => $usuario,
         ], 201);
     });
 }

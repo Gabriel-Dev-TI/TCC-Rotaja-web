@@ -24,4 +24,6 @@ Route::middleware('auth:sanctum')->group(function () {
     //Listagens
     Route::get('/historico', [UsuarioController::class, 'historico']);
     Route::apiResource('entregas', EntregaController::class);
+
+    Route::post('/enderecos',[EmpresaController::class,'endereco']);
 });

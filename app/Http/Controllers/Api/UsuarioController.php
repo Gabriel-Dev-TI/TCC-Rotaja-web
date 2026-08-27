@@ -33,15 +33,18 @@ class UsuarioController extends Controller
         $usuario->tokens()->delete();
         $token = $usuario->createToken('flutter')->plainTextToken;
 
+        if ($usuario->cargo === 'empresa') {
+        $usuario->load('empresa.enderecos');
+        }
+
+        if ($usuario->cargo === 'entregador') {
+            $usuario->load('entregador');
+        }
+
         return response()->json([
             'sucesso' => true,
             'token' => $token,
-            'usuario' => [
-                'id' => $usuario->id,
-                'nome' => $usuario->nome,
-                'email' => $usuario->email,
-                'cargo' => $usuario->cargo,
-            ]
+            'usuario' => $usuario,
         ], 200);
     }
 
@@ -60,7 +63,7 @@ class UsuarioController extends Controller
     $usuario = Auth::user();
 
     if ($usuario->cargo === 'empresa') {
-        $usuario->load('empresa.endereco');
+        $usuario->load('empresa.enderecos');
     }
 
     if ($usuario->cargo === 'entregador') {

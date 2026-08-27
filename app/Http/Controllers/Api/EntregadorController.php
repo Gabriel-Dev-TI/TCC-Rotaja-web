@@ -54,10 +54,13 @@ class EntregadorController extends Controller
             ]);
 
             $token = $usuario->createToken('flutter')->plainTextToken;
+            
+            $usuario->load('entregador');
 
             return response()->json([
                 'sucesso' => true,
-                'token' => $token
+                'token' => $token,
+                'usuario' => $usuario,
             ], 201);
         });
     }
