@@ -2,365 +2,356 @@
 
 @section('content')
 
-<style>
-    html,
-    body {
-        overflow: hidden !important;
-    }
+<div class="container-fluid p-0">
 
-    .rota-container {
-        position: relative;
-        width: 100%;
-        height: calc(100vh - 70px);
-        overflow: hidden;
-    }
+@if(!$entrega)
 
-    #map {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: calc(100% - 380px);
-        height: 100%;
-    }
+    <div class="card">
+        <div class="card-body text-center py-5">
 
-    .rota-card {
-        position: absolute;
-        top: 20px;
-        right: 20px;
-        width: 340px;
-        height: calc(100% - 40px);
-        background: white;
-        border-radius: 12px;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, .15);
-        z-index: 1000;
-        overflow: hidden;
-        display: flex;
-        flex-direction: column;
-    }
+            <i data-feather="map" class="text-muted mb-3" style="width:48px;height:48px;"></i>
 
-    .rota-card-header {
-        padding: 18px 20px;
-        border-bottom: 1px solid #eee;
-        flex-shrink: 0;
-    }
+            <h4>Nenhuma rota em andamento</h4>
 
-    .rota-card-body {
-        padding: 18px 20px;
-        flex: 1;
-        overflow: hidden;
-    }
+            <p class="text-muted mb-4">
+                Você não possui nenhuma entrega aceita ou em trânsito.
+            </p>
 
-    .info-item {
-        margin-bottom: 14px;
-    }
+            <a href="{{ route('entregador.dashboard') }}" class="btn btn-primary">
+                <i data-feather="arrow-left" class="me-1"></i>
+                Voltar para entregas
+            </a>
 
-    .info-label {
-        display: block;
-        font-size: 12px;
-        color: #6c757d;
-        margin-bottom: 3px;
-    }
+        </div>
+    </div>
 
-    .info-value {
-        font-size: 14px;
-        font-weight: 500;
-    }
+@else
 
-    .rota-card-footer {
-        padding: 15px 20px 20px;
-        border-top: 1px solid #eee;
-        flex-shrink: 0;
-    }
+    @php
+        $origem = $entrega->enderecoOrigem;
+        $destino = $entrega->enderecoDestino;
+    @endphp
 
-    .rota-card-footer .btn {
-        width: 100%;
-        margin-top: 8px;
-    }
+    <div class="row g-3">
 
-    .observacao-input {
-        resize: none;
-        height: 70px;
-    }
+        <div class="col-12 col-xl-8">
 
-    .rota-sem-entrega {
-        width: 100%;
-        height: 100%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        text-align: center;
-    }
+            <div class="card mb-0">
 
-    @media (max-width: 900px) {
+                <div class="card-body p-0">
 
-        .rota-container {
-            height: calc(100vh - 60px);
-        }
+                    <div
+                        id="map"
+                        style="height: calc(100vh - 100px); min-height: 500px;"
+                    ></div>
 
-        #map {
-            width: 100%;
-            height: 55%;
-        }
+                </div>
 
-        .rota-card {
-            top: auto;
-            bottom: 10px;
-            left: 10px;
-            right: 10px;
-            width: auto;
-            height: 42%;
-        }
-    }
-</style>
-
-
-<div class="rota-container">
-
-    @if(!$entrega)
-
-        <div class="rota-sem-entrega">
-
-            <div>
-
-                <i
-                    data-feather="map"
-                    style="width:60px;height:60px;"
-                    class="text-muted mb-3"
-                ></i>
-
-                <h4>
-                    Nenhuma rota em andamento
-                </h4>
-
-                <p class="text-muted">
-                    Você não possui nenhuma entrega aceita ou em trânsito.
-                </p>
-
-                <a
-                    href="{{ route('entregador.dashboard') }}"
-                    class="btn btn-primary"
-                >
-                    Voltar para entregas
-                </a>
             </div>
 
         </div>
 
-    @else
 
-        <div id="map"></div>
+        <div class="col-12 col-xl-4">
 
-        <div class="rota-card">
+            <div class="card mb-0">
 
-            <div class="rota-card-header">
+                <div class="card-header">
 
-                <h5 class="mb-1">
-                    {{ $entrega->nome_produto }}
-                </h5>
+                    <div class="d-flex align-items-center justify-content-between">
 
-                <small class="text-muted">
-                    {{ $entrega->empresa->usuario->nome ?? 'Empresa' }}
-                </small>
+                        <div>
 
-            </div>
+                            <h4 class="card-title mb-1">
+                                {{ $entrega->nome_produto }}
+                            </h4>
 
+                            <div class="text-muted small">
+                                {{ $entrega->empresa->usuario->nome ?? 'Empresa' }}
+                            </div>
 
-            <div class="rota-card-body">
+                        </div>
 
-                <div class="info-item">
+                        <span class="badge bg-{{ $entrega->status === 'em_transito' ? 'warning' : 'info' }}">
 
-                    <span class="info-label">
-                        Retirada
-                    </span>
+                            {{ $entrega->status === 'em_transito' ? 'Em trânsito' : 'Aceita' }}
 
-                    <span class="info-value">
+                        </span>
 
-                        {{ $entrega->enderecoOrigem->logradouro }},
-                        {{ $entrega->enderecoOrigem->numero }}
-
-                        <br>
-
-                        {{ $entrega->enderecoOrigem->bairro }},
-                        {{ $entrega->enderecoOrigem->cidade }} -
-                        {{ $entrega->enderecoOrigem->estado }}
-
-                    </span>
-
-                </div>
-
-                <div class="info-item">
-
-                    <span class="info-label">
-                        Destino
-                    </span>
-
-                    <span class="info-value">
-
-                        {{ $entrega->enderecoDestino->logradouro }},
-                        {{ $entrega->enderecoDestino->numero }}
-
-                        <br>
-
-                        {{ $entrega->enderecoDestino->bairro }},
-                        {{ $entrega->enderecoDestino->cidade }} -
-                        {{ $entrega->enderecoDestino->estado }}
-
-                    </span>
+                    </div>
 
                 </div>
 
 
-                <div class="row">
+                <div class="card-body">
 
-                    <div class="col-4">
+                    <div class="row mb-3">
 
-                        <div class="info-item">
+                        <div class="col-4">
 
-                            <span class="info-label">
+                            <div class="text-muted small">
                                 Preço
-                            </span>
+                            </div>
 
-                            <span class="info-value">
-                                R$
-                                {{ number_format($entrega->preco, 2, ',', '.') }}
-                            </span>
+                            <strong>
+                                R$ {{ number_format($entrega->preco, 2, ',', '.') }}
+                            </strong>
 
                         </div>
 
-                    </div>
+                        <div class="col-4">
 
-
-                    <div class="col-4">
-
-                        <div class="info-item">
-
-                            <span class="info-label">
+                            <div class="text-muted small">
                                 Distância
-                            </span>
+                            </div>
 
-                            <span
-                                id="distancia"
-                                class="info-value"
-                            >
-                                ...
-                            </span>
+                            <strong id="distancia">
+
+                                {{ number_format($entrega->distancia ?? 0, 1, ',', '.') }} km
+
+                            </strong>
 
                         </div>
 
-                    </div>
+                        <div class="col-4">
 
-
-                    <div class="col-4">
-
-                        <div class="info-item">
-
-                            <span class="info-label">
+                            <div class="text-muted small">
                                 Estimativa
-                            </span>
+                            </div>
 
-                            <span
-                                id="tempo"
-                                class="info-value"
-                            >
-                                ...
-                            </span>
+                            <strong id="tempo">
+
+                                @if($entrega->tempo_estimado_minutos)
+                                    {{ $entrega->tempo_estimado_minutos }} min
+                                @else
+                                    —
+                                @endif
+
+                            </strong>
 
                         </div>
 
                     </div>
 
-                </div>
 
-                @if($entrega->descricao)
+                    <hr>
 
-                    <div class="info-item">
+                    <div class="mb-4">
 
-                        <span class="info-label">
-                            Descrição
-                        </span>
+                        <div class="d-flex align-items-center mb-2">
 
-                        <span class="info-value">
-                            {{ $entrega->descricao }}
-                        </span>
+                            <i data-feather="package" class="text-primary me-2"></i>
+
+                            <strong>
+                                Local de retirada
+                            </strong>
+
+                        </div>
+
+                        @if($origem)
+
+                            <div class="small">
+
+                                <strong>CEP:</strong>
+                                {{ $origem->cep }}
+
+                                <br>
+
+                                {{ $origem->logradouro }},
+                                {{ $origem->numero }}
+
+                                @if($origem->complemento)
+                                    - {{ $origem->complemento }}
+                                @endif
+
+                                <br>
+
+                                {{ $origem->bairro }},
+                                {{ $origem->cidade }} -
+                                {{ $origem->estado }}
+
+                            </div>
+
+                        @else
+
+                            <div class="text-muted small">
+                                Endereço de retirada não disponível.
+                            </div>
+
+                        @endif
 
                     </div>
 
-                @endif
+                    <div class="mb-4">
 
-                <div class="info-item">
+                        <div class="d-flex align-items-center mb-2">
 
-                    <label
-                        for="observacoes"
-                        class="info-label"
+                            <i data-feather="map-pin" class="text-primary me-2"></i>
+
+                            <strong>
+                                Local de destino
+                            </strong>
+
+                        </div>
+
+                        @if($destino)
+
+                            <div class="small">
+
+                                <strong>CEP:</strong>
+                                {{ $destino->cep }}
+
+                                <br>
+
+                                {{ $destino->logradouro }},
+                                {{ $destino->numero }}
+
+                                @if($destino->complemento)
+                                    - {{ $destino->complemento }}
+                                @endif
+
+                                <br>
+
+                                {{ $destino->bairro }},
+                                {{ $destino->cidade }} -
+                                {{ $destino->estado }}
+
+                            </div>
+
+                        @else
+
+                            <div class="text-muted small">
+                                Endereço de destino não disponível.
+                            </div>
+
+                        @endif
+
+                    </div>
+
+                    @if($entrega->descricao)
+
+                        <div class="mb-4">
+
+                            <div class="text-muted small mb-1">
+                                Descrição
+                            </div>
+
+                            <div class="small">
+                                {{ $entrega->descricao }}
+                            </div>
+
+                        </div>
+
+                    @endif
+
+
+                    <form
+                        method="POST"
+                        action="{{ route('entrega.observacao', $entrega->id) }}"
                     >
-                        Observação
-                    </label>
 
-                    <textarea
-                        id="observacoes"
-                        class="form-control observacao-input"
-                        placeholder="Digite uma observação..."
-                    >{{ $entrega->observacoes }}</textarea>
+                        @csrf
+
+                        <div class="mb-2">
+
+                            <label
+                                for="observacoes"
+                                class="form-label"
+                            >
+                                Observação
+                            </label>
+
+                            <textarea
+                                name="observacoes"
+                                id="observacoes"
+                                class="form-control"
+                                rows="2"
+                                maxlength="1000"
+                                placeholder="Digite uma observação..."
+                            >{{ old('observacoes', $entrega->observacoes) }}</textarea>
+
+                        </div>
+
+                        <button
+                            type="submit"
+                            class="btn btn-outline-primary btn-sm"
+                        >
+
+                            <i data-feather="message-square" class="me-1"></i>
+
+                            Registrar observação
+
+                        </button>
+
+                    </form>
 
                 </div>
 
-            </div>
+                <div class="card-footer">
 
-            <div class="rota-card-footer">
+                    <div class="d-grid gap-2">
 
-                <form
-                    method="POST"
-                    action="{{ route('entrega.finalizar', $entrega->id) }}"
-                >
+                        <form
+                            method="POST"
+                            action="{{ route('entrega.finalizar', $entrega->id) }}"
+                        >
 
-                    @csrf
-                    @method('PATCH')
+                            @csrf
+                            @method('PATCH')
 
-                    <button
-                        type="submit"
-                        class="btn btn-success"
-                        onclick="return confirm('Deseja finalizar esta entrega?')"
-                    >
+                            <button
+                                type="submit"
+                                class="btn btn-success w-100"
+                                onclick="return confirm('Deseja finalizar esta entrega?')"
+                            >
 
-                        <i
-                            data-feather="check-circle"
-                            class="me-1"
-                        ></i>
+                                <i data-feather="check-circle" class="me-1"></i>
 
-                        Finalizar entrega
+                                Finalizar entrega
 
-                    </button>
+                            </button>
 
-                </form>
+                        </form>
 
 
-                <button
-                    type="button"
-                    class="btn btn-outline-danger"
-                    id="btnObservacao"
-                >
+                        <form
+                            method="POST"
+                            action="{{ route('entrega.cancelar', $entrega->id) }}"
+                            onsubmit="return confirm('Deseja realmente cancelar esta entrega?')"
+                        >
 
-                    <i
-                        data-feather="message-square"
-                        class="me-1"
-                    ></i>
+                            @csrf
 
-                    Registrar observação
+                            <button
+                                type="submit"
+                                class="btn btn-outline-danger w-100"
+                            >
 
-                </button>
+                                <i data-feather="x-circle" class="me-1"></i>
+
+                                Cancelar entrega
+
+                            </button>
+
+                        </form>
+
+                    </div>
+
+                </div>
 
             </div>
 
         </div>
 
-    @endif
+    </div>
+
+@endif
 
 </div>
 
 @endsection
 
-
-@if($entrega)
+@if($entrega && $entrega->enderecoOrigem && $entrega->enderecoDestino)
 
 @push('scripts')
 
@@ -386,7 +377,6 @@ document.addEventListener('DOMContentLoaded', function () {
     ];
 
 
-    //Leaflet cria o mapa
     const map = L.map('map');
 
 
@@ -402,15 +392,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
     L.marker(origem)
         .addTo(map)
-        .bindPopup('Retirada');
+        .bindPopup('Local de retirada');
 
 
     L.marker(destino)
         .addTo(map)
-        .bindPopup('Destino');
+        .bindPopup('Local de destino');
 
 
-    //OSRM busca a rota
+    // Mudar para o MapBox..
     const url =
         'https://router.project-osrm.org/route/v1/driving/' +
         `${origem[1]},${origem[0]};` +
@@ -418,16 +408,17 @@ document.addEventListener('DOMContentLoaded', function () {
         '?overview=full&geometries=geojson';
 
 
-    fetch(url)
+    fetch(url).then(response => {
 
-        .then(response => response.json())
+            if (!response.ok) {
+                throw new Error('Erro ao buscar rota.');
+            }
 
-        .then(data => {
+            return response.json();
 
-            if (
-                !data.routes ||
-                data.routes.length === 0
-            ) {
+    }).then(data => {
+
+            if (!data.routes || !data.routes.length) {
                 throw new Error('Rota não encontrada.');
             }
 
@@ -435,66 +426,52 @@ document.addEventListener('DOMContentLoaded', function () {
             const rota = data.routes[0];
 
 
-            const distancia =
-                rota.distance / 1000;
+            const distancia = rota.distance / 1000;
 
-            document.getElementById('distancia')
-                .textContent =
-                distancia
-                    .toFixed(1)
-                    .replace('.', ',') + ' km';
 
-            const minutos =
-                Math.round(rota.duration / 60);
+            document.getElementById('distancia').textContent =
+            distancia.toFixed(1).replace('.', ',') + ' km';
+
+            const minutos = Math.round(rota.duration / 60);
 
             let tempo;
 
+
             if (minutos < 60) {
-
-                tempo =
-                    minutos + ' min';
-
+                tempo = minutos + ' min';
             } else {
 
-                const horas =
-                    Math.floor(minutos / 60);
-
-                const min =
-                    minutos % 60;
-
-                tempo =
-                    horas + 'h ' + min + 'min';
+                const horas = Math.floor(minutos / 60);
+                const min = minutos % 60;
+                tempo = horas + 'h ' + min + 'min';
 
             }
 
-            document.getElementById('tempo')
-                .textContent = tempo;
+
+            document.getElementById('tempo').textContent = tempo;
 
 
             const pontos =
-                rota.geometry.coordinates.map(
-                    ponto => [
-                        ponto[1],
-                        ponto[0]
-                    ]
-                );
+                rota.geometry.coordinates.map(ponto => [
+                    ponto[1],
+                    ponto[0]
+                ]);
 
 
-            const linha =
-                L.polyline(
-                    pontos,
-                    {
-                        color: '#6D4AFF',
-                        weight: 5,
-                        opacity: .9
-                    }
-                ).addTo(map);
+            const linha = L.polyline(
+                pontos,
+                {
+                    color: '#6D4AFF',
+                    weight: 5,
+                    opacity: 0.9
+                }
+            ).addTo(map);
 
 
             map.fitBounds(
                 linha.getBounds(),
                 {
-                    padding: [40, 40],
+                    padding: [30, 30],
                     maxZoom: 16
                 }
             );
@@ -505,100 +482,18 @@ document.addEventListener('DOMContentLoaded', function () {
 
             console.error(error);
 
-            const bounds =
-                L.latLngBounds([
-                    origem,
-                    destino
-                ]);
-
             map.fitBounds(
-                bounds,
+                L.latLngBounds([origem, destino]),
                 {
-                    padding: [40, 40],
+                    padding: [30, 30],
                     maxZoom: 15
                 }
             );
 
-            document.getElementById('distancia')
-                .textContent = 'Indisponível';
-
-            document.getElementById('tempo')
-                .textContent = 'Indisponível';
-
-        });
-
-    document
-        .getElementById('btnObservacao')
-        .addEventListener('click', function () {
-
-            const observacao =
-                document
-                    .getElementById('observacoes')
-                    .value
-                    .trim();
-
-
-            if (!observacao) {
-
-                alert('Digite uma observação.');
-
-                return;
-            }
-
-
-            fetch(
-                '{{ route("entrega.ocorrencia", $entrega->id) }}',
-                {
-                    method: 'POST',
-
-                    headers: {
-                        'Content-Type':
-                            'application/json',
-
-                        'X-CSRF-TOKEN':
-                            '{{ csrf_token() }}',
-
-                        'Accept':
-                            'application/json'
-                    },
-
-                    body: JSON.stringify({
-                        observacoes: observacao
-                    })
-                }
-            )
-
-            .then(response => {
-
-                if (!response.ok) {
-                    throw new Error();
-                }
-
-                return response.json();
-
-            })
-
-            .then(() => {
-
-                alert(
-                    'Observação registrada com sucesso.'
-                );
-
-            })
-
-            .catch(() => {
-
-                alert(
-                    'Não foi possível registrar a observação.'
-                );
-
-            });
-
         });
 
 
-
-    setTimeout(() => {
+    setTimeout(function () {
 
         map.invalidateSize();
 

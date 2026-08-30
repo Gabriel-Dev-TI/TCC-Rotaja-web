@@ -59,11 +59,11 @@ class Entrega extends Model
 
     public function enderecoOrigem()
     {
-        return $this->belongsTo(Endereco::class, 'endereco_origem_id');
+        return $this->belongsTo(Endereco::class, 'endereco_origem_id')->withTrashed();
     }
 
     public function enderecoDestino()
     {
-        return $this->belongsTo(Endereco::class, 'endereco_destino_id');
+        return $this->belongsTo(Endereco::class, 'endereco_destino_id')->withTrashed();
     }
 }

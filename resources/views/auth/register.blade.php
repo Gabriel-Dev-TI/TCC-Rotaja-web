@@ -443,13 +443,6 @@
                                         </option>
 
                                         <option
-                                            value="van"
-                                            {{ old('tipo_veiculo') === 'van' ? 'selected' : '' }}
-                                        >
-                                            Van
-                                        </option>
-
-                                        <option
                                             value="caminhao"
                                             {{ old('tipo_veiculo') === 'caminhao' ? 'selected' : '' }}
                                         >

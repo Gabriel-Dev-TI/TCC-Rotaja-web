@@ -192,7 +192,7 @@
                     <tr>
 
                         <td
-                            colspan="5"
+                            colspan="7"
                             class="text-center text-muted py-4"
                         >
 

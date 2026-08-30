@@ -83,12 +83,11 @@ Route::middleware(['cargo:admin'])->group(function () {
     // Rotas Entregador
     Route::middleware(['cargo:entregador'])->group(function () {
         Route::get('/entregador', [EntregadorController::class, 'index'])->name('entregador.dashboard');
-        Route::get('/rota', [EntregaController::class,'rota'])->name('rota');
+        Route::get('/rota', [EntregadorController::class,'rota'])->name('rota');
         Route::post('/entregador/entrega/{id}/aceitar',[EntregadorController::class, 'aceitarEntrega'])->name('entregador.entrega.aceitar');
-        Route::patch('/entrega/{entrega}/finalizar', [EntregaController::class, 'finalizar'])->name('entrega.finalizar');
-        Route::post('/entrega/{entrega}/ocorrencia', [EntregaController::class, 'ocorrencia'])->name('entrega.ocorrencia');
-        Route::post('/entregas/{entrega}/observacao',[EntregaController::class, 'observacao'])->name('entregas.observacao');
-        Route::patch('/entregas/{entrega}/finalizar',[EntregaController::class, 'finalizar'])->name('entregas.finalizar');
+        Route::patch('/entrega/{entrega}/finalizar', [EntregadorController::class, 'finalizar'])->name('entrega.finalizar');
+        Route::post('/entrega/{entrega}/cancelar', [EntregadorController::class, 'cancelar'])->name('entrega.cancelar');
+        Route::post('/entregas/{entrega}/observacao',[EntregadorController::class, 'observacao'])->name('entrega.observacao');
         
     });
 });
