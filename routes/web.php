@@ -21,7 +21,7 @@ Route::get('/', function () {
         };
 
     }
-    return app(\App\Http\Controllers\HomeController::class)->index();
+    return view('landingpage');
 })->name('home');
 
 

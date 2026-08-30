@@ -2,7 +2,14 @@
 			<div class="sidebar-content js-simplebar">
                 <div class="text-center w-100">
     			<h1 class="m-0 mt-3 fw-bold">
-      		  <span style="color:#000;">Rota</span><span style="color:white;">Já</span>
+      		  <a href="{{ url('/') }}" class="navbar-brand">
+                <img
+                    src="{{ asset('img/logo.png') }}"
+                    alt="RotaJá"
+                    class="img-fluid"
+                    style="width: 150px; height: auto; filter: brightness(0) invert(1);"
+                >
+            </a>
   			  </h1>
 			</div>
 

@@ -11,6 +11,10 @@
 
     <link rel="preconnect" href="https://fonts.gstatic.com">
 
+    <meta name="description"
+        content="RotaJá é uma plataforma para gerenciamento e realização de entregas, conectando empresas e entregadores.">
+    <meta name="author" content="RotaJá">
+
     <link
         href="{{ asset('css/app.css') }}"
         rel="stylesheet"
@@ -32,30 +36,12 @@
         <nav class="navbar navbar-expand navbar-light navbar-bg px-3 fixed-top">
 			<a href="/">
 				<img
-        src="{{ asset('img/logo.png') }}"
-        alt="RotaJá"
-        class="img-fluid"
-        style="width: 150px; height: auto;"
-    >
-			</a>
-    
-
-    <div class="navbar-collapse">
-
-        <div class="ms-auto">
-
-            @if (request()->is('/'))
-                <a
-                    href="{{ route('login') }}"
-                    class="btn btn-primary px-4 py-2 mx-1"
-                >
-                    Entrar
+            src="{{ asset('img/logo.png') }}"
+            alt="RotaJá"
+            class="img-fluid"
+            style="width: 150px; height: auto;"
+        >
                 </a>
-            @endif
-
-        </div>
-
-    </div>
 
 </nav>
 
