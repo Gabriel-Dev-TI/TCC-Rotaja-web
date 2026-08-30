@@ -275,13 +275,14 @@
                         <th class="d-none d-xl-table-cell">
                             Data
                         </th>
-
-                        <th class="d-none d-md-table-cell">
-                            Empresa
-                        </th>
-
                         <th>
                             Status
+                        </th>
+                        <th>
+                        Preço
+                        </th>
+                        <th class="d-none d-md-table-cell">
+                            Distância
                         </th>
 
                         <th class="d-none d-xl-table-cell">
@@ -346,12 +347,6 @@
 
                             </td>
 
-                            <td class="d-none d-md-table-cell">
-
-                                {{ $entrega->empresa->usuario->nome ?? '—' }}
-
-                            </td>
-
                             <td>
 
                                 <span class="badge bg-{{ $statusCor }}">
@@ -361,10 +356,36 @@
                                 </span>
 
                             </td>
+                            <td>
+                            R$ {{ number_format($entrega->preco, 2, ',', '.') }}
+                            </td>
+
+                            <td class="d-none d-xl-table-cell">
+                                {{ number_format($entrega->distancia, 1, ',', '.') }} KM
+                            </td>
 
                             <td class="d-none d-xl-table-cell">
 
-                                {{ $entrega->entregador->usuario->nome ?? '—' }}
+                                @if ($entrega->entregador && $entrega->entregador->usuario)
+    
+                            {{ $entrega->entregador->usuario->nome }}
+
+                        @else
+
+                            <form
+                                method="POST"
+                                action="{{ route('empresa.entregas.destroy', $entrega) }}"
+                                onsubmit="return confirm('Deseja realmente cancelar esta entrega?')"
+                            >
+                                @csrf
+                                @method('DELETE')
+
+                                <button type="submit" class="btn btn-danger btn-sm">
+                                    Cancelar
+                                </button>
+                            </form>
+
+                        @endif
 
                             </td>
 

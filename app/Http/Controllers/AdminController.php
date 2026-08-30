@@ -122,7 +122,7 @@ class AdminController extends Controller
     {
         $empresas = Empresa::with([
             'usuario',
-            'endereco',
+            'enderecos',
         ])
             ->latest()
             ->get();

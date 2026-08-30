@@ -13,6 +13,10 @@
         </p>
     </div>
 
+    <h2 class="badge bg-primary-subtle text-primary px-3 py-2 m-1">
+    Pague o entregador quando entregar o produto.
+    </h2>
+
     <div class="card">
 
         <div class="card-header">
@@ -59,6 +63,33 @@
                             placeholder="Ex.: Caixa de documentos"
                             required
                         >
+
+                    </div>
+                    <div class="col-md-4 mb-3">
+
+                        <label for="peso" class="form-label">
+                            Peso
+                        </label>
+
+                        <div class="input-group">
+
+                            <input
+                                type="number"
+                                id="peso"
+                                name="peso"
+                                class="form-control"
+                                value="{{ old('peso') }}"
+                                placeholder="0"
+                                min="0"
+                                step="0.01"
+                                required
+                            >
+
+                            <span class="input-group-text">
+                                kg
+                            </span>
+
+                        </div>
 
                     </div>
 
@@ -146,9 +177,9 @@
 
                     <div class="col-12 mt-2 mb-2">
 
-                        <h5 class="mb-1">
-                            Dimensões do produto
-                        </h5>
+                    <h5 class="card-title mb-0">
+                        Dimensões do produto
+                    </h5>
 
                         <p class="text-muted small mb-3">
                             Informe as medidas aproximadas do produto.
@@ -240,33 +271,7 @@
 
                     </div>
 
-                    <div class="col-md-4 mb-3">
-
-                        <label for="peso" class="form-label">
-                            Peso
-                        </label>
-
-                        <div class="input-group">
-
-                            <input
-                                type="number"
-                                id="peso"
-                                name="peso"
-                                class="form-control"
-                                value="{{ old('peso') }}"
-                                placeholder="0"
-                                min="0"
-                                step="0.01"
-                                required
-                            >
-
-                            <span class="input-group-text">
-                                kg
-                            </span>
-
-                        </div>
-
-                    </div>
+                    
 
                     <div class="col-12 mb-3">
 

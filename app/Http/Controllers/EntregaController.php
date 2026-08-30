@@ -70,7 +70,7 @@ class EntregaController extends Controller
 
         if (!$empresa) {
         abort(403, 'Empresa não encontrada.');
-    }
+        }
 
         $dados = $request->validate([
 
@@ -113,6 +113,15 @@ class EntregaController extends Controller
                 ->withErrors([
                     'endereco_destino_id' =>
                         'O endereço de destino não pertence à sua empresa.',
+                ]);
+        }
+
+        if ($origem->id === $destino->id) {
+            return back()
+                ->withInput()
+                ->withErrors([
+                    'endereco_destino_id' =>
+                        'O endereço de origem não pode ser igual ao endereço de destino.',
                 ]);
         }
 
@@ -331,7 +340,7 @@ class EntregaController extends Controller
 
 
     /**
-     * Remove uma entrega.
+     * Cancela uma entrega.
      */
     public function destroy(Entrega $entrega)
     {
@@ -344,7 +353,7 @@ class EntregaController extends Controller
             abort(403, ucfirst($cargo) . ' não encontrado.');
         }
 
-        if ($cargo !== 'admin') {
+        if ($cargo == 'entregador') {
 
             $campoId = $cargo . '_id';
 
@@ -353,10 +362,28 @@ class EntregaController extends Controller
             }
         }
 
+        // Se a entrega não tiver entregador e tiver pendende ela pode ser cancelada
+        $podeCancelar = Entrega::where('id', $entrega->id) 
+         ->where('status', 'pendente')
+         ->whereNull('entregador_id')
+         ->exists();
+        
+
+        if(!$podeCancelar){
+
+        return redirect()
+                ->back()
+                ->withErrors([
+                    'entrega' =>
+                        'Esta entrega está em andamento e não pode ser cancelada.'
+                ]);
+            
+        }
+
         $entrega->delete();
 
         return redirect()
-            ->route('entregas.index')
+            ->route('empresa.dashboard')
             ->with('success', 'Entrega excluída com sucesso.');
     }
 }

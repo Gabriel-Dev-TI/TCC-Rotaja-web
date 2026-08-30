@@ -71,6 +71,7 @@ Route::middleware(['cargo:admin'])->group(function () {
         Route::get('/empresa', [EmpresaController::class, 'index'])->name('empresa.dashboard');
         Route::get('/entregas/cadastrar', [EntregaController::class,'create'])->name('entregas.create');
         Route::post('/entregas', [EntregaController::class,'store'])->name('empresa.entregas.store');
+        Route::delete('/entregas/{entrega}', [EntregaController::class,'destroy'])->name('empresa.entregas.destroy');
         Route::get('/enderecos', [EnderecoController::class, 'index'])->name('enderecos.index');
         Route::get('/enderecos/cadastrar', [EnderecoController::class, 'create'])->name('empresa.enderecos.create');
         Route::post('/enderecos', [EnderecoController::class, 'store'])->name('empresa.enderecos.store');

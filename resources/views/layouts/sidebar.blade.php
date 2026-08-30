@@ -21,7 +21,6 @@
 
     @if (auth()->user()->cargo === 'admin')
 
-        {{-- PAINEL --}}
         <li class="sidebar-item {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
 
             <a
@@ -41,7 +40,7 @@
         </li>
 
 
-        <li class="sidebar-item {{ request()->routeIs('entregadores.*') ? 'active' : '' }}">
+        <li class="sidebar-item {{ request()->routeIs('admin.entregadores.*') ? 'active' : '' }}">
 
             <a
                 class="sidebar-link"
@@ -59,7 +58,7 @@
 
         </li>
 
-        <li class="sidebar-item {{ request()->routeIs('empresas.*') ? 'active' : '' }}">
+        <li class="sidebar-item {{ request()->routeIs('admin.empresas.*') ? 'active' : '' }}">
 
             <a
                 class="sidebar-link"
@@ -77,7 +76,7 @@
 
         </li>
 
-        <li class="sidebar-item {{ request()->routeIs('entregas.*') ? 'active' : '' }}">
+        <li class="sidebar-item {{ request()->routeIs('admin.entregas.*') ? 'active' : '' }}">
 
             <a
                 class="sidebar-link"
@@ -97,7 +96,6 @@
 
     @elseif (auth()->user()->cargo === 'entregador')
 
-        {{-- PAINEL --}}
         <li class="sidebar-item {{ request()->routeIs('entregador.dashboard') ? 'active' : '' }}">
 
             <a
@@ -136,7 +134,6 @@
 
     @elseif (auth()->user()->cargo === 'empresa')
 
-        {{-- PAINEL --}}
         <li class="sidebar-item {{ request()->routeIs('empresa.dashboard') ? 'active' : '' }}">
 
             <a
@@ -173,7 +170,7 @@
 
         </li>
 
-        <li class="sidebar-item {{ request()->routeIs('enderecos.*') ? 'active' : '' }}">
+        <li class="sidebar-item {{ request()->routeIs('enderecos.*') || request()->routeIs('empresa.enderecos.*')  ? 'active' : '' }}">
 
             <a
                 class="sidebar-link"
