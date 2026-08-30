@@ -39,7 +39,7 @@
 
             <a href="{{ url('/') }}" class="navbar-brand">
                 <img
-                    src="{{ asset('img/logo.png') }}"
+                    src="{{ asset('img/logo.webp') }}"
                     alt="RotaJá"
                     class="img-fluid"
                     style="width: 150px; height: auto;"
@@ -126,7 +126,7 @@
                         <div class="d-flex flex-column flex-lg-row align-items-center">
 
                             <a
-                                href="#download"
+                                href="#"
                                 class="btn btn-primary rounded-pill px-4 mb-3 mb-lg-0 me-lg-3"
                             >
                                 Baixe o App
@@ -238,7 +238,7 @@
                                 <div class="screen bg-white ">
 
                                     <img
-                                        src="{{ asset('new-age-template/assets/img/celular.png') }}"
+                                        src="{{ asset('new-age-template/assets/img/celular.webp') }}"
                                         class="img-fluid"
                                         alt="Aplicativo RotaJá"
                                         style="width: 100%; height: 100%; object-fit: cover;"
@@ -490,7 +490,7 @@
                                  <div class="screen bg-white ">
 
                                     <img
-                                        src="{{ asset('new-age-template/assets/img/celularMapa.png') }}"
+                                        src="{{ asset('new-age-template/assets/img/celularMapa.webp') }}"
                                         class="img-fluid"
                                         alt="Aplicativo RotaJá"
                                         style="width: 100%; height: 100%; object-fit: cover;"
@@ -797,7 +797,7 @@
             <div class="mb-4">
 
                 <img
-                    src="{{ asset('img/logo.png') }}"
+                    src="{{ asset('img/logo.webp') }}"
                     alt="RotaJá"
                     style="width: 130px; filter: brightness(0) invert(1);"
                 >

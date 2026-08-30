@@ -36,7 +36,7 @@
         <nav class="navbar navbar-expand navbar-light navbar-bg px-3 fixed-top">
 			<a href="/">
 				<img
-            src="{{ asset('img/logo.png') }}"
+            src="{{ asset('img/logo.webp') }}"
             alt="RotaJá"
             class="img-fluid"
             style="width: 150px; height: auto;"

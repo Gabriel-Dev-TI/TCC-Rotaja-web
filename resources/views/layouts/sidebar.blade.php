@@ -4,7 +4,7 @@
     			<h1 class="m-0 mt-3 fw-bold">
       		  <a href="{{ url('/') }}" class="navbar-brand">
                 <img
-                    src="{{ asset('img/logo.png') }}"
+                    src="{{ asset('img/logo.webp') }}"
                     alt="RotaJá"
                     class="img-fluid"
                     style="width: 150px; height: auto; filter: brightness(0) invert(1);"
