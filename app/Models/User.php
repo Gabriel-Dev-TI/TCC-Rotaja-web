@@ -57,4 +57,21 @@ class User extends Authenticatable
     {
         return $this->hasOne(Entregador::class, 'usuario_id');
     }
+
+    // Assim que o usuario for deletado
+    // deleta a conta de empresa ou de entregador do usuario
+    protected static function booted()
+    {
+        static::deleting(function ($usuario) {
+
+            if ($usuario->empresa) {
+                $usuario->empresa->delete();
+            }
+
+            if ($usuario->entregador) {
+                $usuario->entregador->delete();
+            }
+
+        });
+    }
 }

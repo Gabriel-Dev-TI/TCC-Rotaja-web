@@ -19,20 +19,12 @@
     </div>
 
 
-    <a
-        href="{{ route('admin.entregas.create') }}"
-        class="btn btn-primary"
-    >
-        <i data-feather="plus" class="align-middle me-1"></i>
-        Nova entrega
-    </a>
-
 </div>
 
 
 @if(session('success'))
 
-    <div class="alert alert-success alert-dismissible fade show">
+    <div class="alert alert-success alert-dismissible fade show text-success m-1">
 
         {{ session('success') }}
 
@@ -49,7 +41,7 @@
 
 @if(session('error'))
 
-    <div class="alert alert-danger alert-dismissible fade show">
+    <div class="alert alert-danger alert-dismissible fade show text-danger m-1">
 
         {{ session('error') }}
 
@@ -66,7 +58,7 @@
 
 @if($errors->any())
 
-    <div class="alert alert-danger">
+    <div class="alert alert-danger text-danger m-1">
 
         <ul class="mb-0">
 
@@ -115,6 +107,8 @@
                     </th>
 
                     <th>Status</th>
+
+                    <th>Preço</th>
 
                     <th class="d-none d-xl-table-cell">
                         Data
@@ -203,6 +197,12 @@
 
                         </td>
 
+                        <td>
+
+                          R$ {{ number_format($entrega->preco,2,',','.') }} 
+        
+                        </td>
+
 
                         <td class="d-none d-xl-table-cell">
 
@@ -214,18 +214,6 @@
                         <td>
 
                             <div class="d-flex gap-1">
-
-
-                                <a
-                                    href="{{ route('admin.entregas.edit', $entrega) }}"
-                                    class="btn btn-sm btn-outline-primary"
-                                    title="Editar"
-                                >
-
-                                    <i data-feather="edit-2"></i>
-
-                                </a>
-
 
                                 <form
                                     action="{{ route('admin.entregas.destroy', $entrega) }}"

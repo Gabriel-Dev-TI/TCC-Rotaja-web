@@ -12,28 +12,24 @@
         </p>
     </div>
 
-    <a href="{{ route('admin.entregadores.create') }}" class="btn btn-primary">
-        <i data-feather="plus" class="align-middle me-1"></i>
-        Novo entregador
-    </a>
 </div>
 
 @if(session('success'))
-    <div class="alert alert-success alert-dismissible fade show">
+    <div class="alert alert-success alert-dismissible fade show text-success m-1">
         {{ session('success') }}
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
 @endif
 
 @if(session('error'))
-    <div class="alert alert-danger alert-dismissible fade show">
+    <div class="alert alert-danger alert-dismissible fade show text-danger m-1">
         {{ session('error') }}
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
 @endif
 
 @if($errors->any())
-    <div class="alert alert-danger">
+    <div class="alert alert-danger text-danger m-1">
         <ul class="mb-0">
             @foreach($errors->all() as $error)
                 <li>{{ $error }}</li>
@@ -56,7 +52,7 @@
                     <th class="d-none d-md-table-cell">E-mail</th>
                     <th class="d-none d-lg-table-cell">CPF</th>
                     <th class="d-none d-lg-table-cell">Veículo</th>
-                    <th class="d-none d-xl-table-cell">Placa</th>
+                    <th class="d-none d-xl-table-cell">Telefone</th>
                     <th>Ações</th>
                 </tr>
             </thead>
@@ -88,19 +84,11 @@
                         </td>
 
                         <td class="d-none d-xl-table-cell">
-                            {{ $entregador->placa ?? '—' }}
+                            {{ $entregador->usuario->telefone ?? '—' }}
                         </td>
 
                         <td>
                             <div class="d-flex gap-1">
-
-                                <a
-                                    href="{{ route('admin.entregadores.edit', $entregador) }}"
-                                    class="btn btn-sm btn-outline-primary"
-                                    title="Editar"
-                                >
-                                    <i data-feather="edit-2"></i>
-                                </a>
 
                                 <form
                                     action="{{ route('admin.entregadores.destroy', $entregador) }}"

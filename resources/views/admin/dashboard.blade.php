@@ -8,11 +8,6 @@
     Painel de <strong>Análise</strong>
 </h1>
 
-
-{{-- ================================================= --}}
-{{-- CARDS --}}
-{{-- ================================================= --}}
-
 <div class="row">
 
     <div class="col-xl-6 col-xxl-5 d-flex">
@@ -20,8 +15,6 @@
         <div class="w-100">
 
             <div class="row">
-
-                {{-- ENTREGAS --}}
 
                 <div class="col-sm-6">
 
@@ -70,9 +63,6 @@
 
                     </div>
 
-
-                    {{-- CONTAS --}}
-
                     <div class="card">
 
                         <div class="card-body">
@@ -119,9 +109,6 @@
                     </div>
 
                 </div>
-
-
-                {{-- EMPRESAS / ENTREGADORES --}}
 
                 <div class="col-sm-6">
 
@@ -224,11 +211,6 @@
 
     </div>
 
-
-    {{-- ================================================= --}}
-    {{-- GRÁFICO DE LINHA --}}
-    {{-- ================================================= --}}
-
     <div class="col-xl-6 col-xxl-7">
 
         <div class="card flex-fill w-100">
@@ -259,11 +241,6 @@
     </div>
 
 </div>
-
-
-{{-- ================================================= --}}
-{{-- TABELA + GRÁFICO MENSAL --}}
-{{-- ================================================= --}}
 
 <div class="row">
 
@@ -434,11 +411,6 @@
 
     </div>
 
-
-    {{-- ================================================= --}}
-    {{-- GRÁFICO MENSAL --}}
-    {{-- ================================================= --}}
-
     <div class="col-12 col-lg-4 col-xxl-3 d-flex">
 
         <div class="card flex-fill w-100">
@@ -494,21 +466,7 @@ document.addEventListener("DOMContentLoaded", function () {
         "Dez"
     ];
 
-
-    /*
-    |--------------------------------------------------------------------------
-    | DADOS REAIS VINDOS DO CONTROLLER
-    |--------------------------------------------------------------------------
-    */
-
     const entregasMensais = @json($entregasMensais);
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | GRÁFICO DE LINHA
-    |--------------------------------------------------------------------------
-    */
 
     const lineCanvas =
         document.getElementById("chartjs-dashboard-line");
@@ -628,13 +586,6 @@ document.addEventListener("DOMContentLoaded", function () {
         );
 
     }
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | GRÁFICO DE BARRAS
-    |--------------------------------------------------------------------------
-    */
 
     const barCanvas =
         document.getElementById("chartjs-dashboard-bar");

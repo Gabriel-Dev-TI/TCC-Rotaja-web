@@ -15,9 +15,7 @@ class AdminController extends Controller
     public function index()
     {
         $totalEntregas = Entrega::count();
-
         $totalEmpresas = Empresa::count();
-
         $totalEntregadores = Entregador::count();
 
         $ultimasEntregas = Entrega::with([
@@ -47,9 +45,7 @@ class AdminController extends Controller
             $entregasMensais[] = $entregasPorMes->get($mes, 0);
         }
 
-        $inicioPeriodo = now()
-            ->subMonths(11)
-            ->startOfMonth();
+        $inicioPeriodo = now()->subMonths(11)->startOfMonth();
 
         $movimentacoes = Entrega::select(
                 DB::raw('YEAR(created_at) as ano'),
@@ -89,44 +85,27 @@ class AdminController extends Controller
         }
 
         return view('admin.dashboard', [
-
             'totalEntregas' => $totalEntregas,
-
             'totalEmpresas' => $totalEmpresas,
-
             'totalEntregadores' => $totalEntregadores,
-
             'ultimasEntregas' => $ultimasEntregas,
-
             'entregasMensais' => $entregasMensais,
-
             'labelsMovimentacoes' => $labelsMovimentacoes,
-
             'dadosMovimentacoes' => $dadosMovimentacoes,
-
         ]);
     }
 
 
     public function entregadores()
     {
-        $entregadores = Entregador::with('usuario')
-            ->latest()
-            ->get();
-
+        $entregadores = Entregador::with('usuario')->latest()->get();
         return view('admin.entregador', compact('entregadores'));
     }
 
 
     public function empresas()
     {
-        $empresas = Empresa::with([
-            'usuario',
-            'enderecos',
-        ])
-            ->latest()
-            ->get();
-
+        $empresas = Empresa::with(['usuario','enderecos',])->latest()->get();
         return view('admin.empresa', compact('empresas'));
     }
 
@@ -144,45 +123,9 @@ class AdminController extends Controller
         return view('admin.entrega', compact('entregas'));
     }
 
-    public function storeEntregador(Request $request)
-    {
-        $validated = $request->validate([
-            'nome' => 'required|string|max:255',
-            'email' => 'required|email|max:255|unique:usuarios,email',
-            'senha' => 'required|string|min:6',
-            'telefone' => 'nullable|string|max:20',
-            'cpf' => 'required|string|max:14|unique:entregadores,cpf',
-            'tipo_veiculo' => 'required|string|max:50',
-            'placa' => 'nullable|string|max:10',
-        ]);
-
-        DB::transaction(function () use ($validated) {
-
-            $usuario = \App\Models\User::create([
-                'nome' => $validated['nome'],
-                'email' => $validated['email'],
-                'senha' => bcrypt($validated['senha']),
-                'telefone' => $validated['telefone'] ?? null,
-                'cargo' => 'entregador',
-            ]);
-
-            Entregador::create([
-                'usuario_id' => $usuario->id,
-                'cpf' => $validated['cpf'],
-                'tipo_veiculo' => $validated['tipo_veiculo'],
-                'placa' => $validated['placa'] ?? null,
-            ]);
-        });
-
-        return redirect()
-            ->route('admin.entregadores')
-            ->with('success', 'Entregador cadastrado com sucesso.');
-    }
-
     public function destroyEntregador(Entregador $entregador)
     {
         $usuario = $entregador->usuario;
-
         $entregador->delete();
 
         if ($usuario) {
@@ -220,4 +163,6 @@ class AdminController extends Controller
             'Entrega removida com sucesso.'
         );
     }
+
+    // Falta ainda o criar e editar de cada um..
 }
