@@ -10,7 +10,7 @@ class EntregadorController extends Controller
     {
         $entregador = auth()->user()->entregador;
 
-        //entregas disponiveis
+        // Entregas disponiveis
         $entregas = Entrega::with([
             'empresa.usuario',
             'enderecoOrigem',
@@ -46,22 +46,21 @@ class EntregadorController extends Controller
         ->where('status', 'concluido')
         ->get();
 
+        // Cria um array com 12 elementos (meses) com valor 0
         $dadosMensais = array_fill(0, 12, 0);
 
         foreach ($entregasConcluidas as $entrega) {
 
-            if (!$entrega->updated_at) {
-                continue;
-            }
-
+            // Pega as entregas pelo mes em que foi atualizada
             $mes = $entrega->updated_at->month;
 
+            // Adiciona a quatidade de entregas em cada mês
             $dadosMensais[$mes - 1]++;
         }
 
 
-        return view(
-            'entregador.dashboard',
+        //Passa as entregas disponiveis para aceitar e os dados por mes para o grafico
+        return view('entregador.dashboard',
             compact(
                 'entregas',
                 'dadosMensais'

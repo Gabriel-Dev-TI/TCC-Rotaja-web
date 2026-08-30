@@ -34,7 +34,7 @@
 
 @if(session('success'))
 
-    <div class="alert alert-success alert-dismissible fade show">
+    <div class="alert alert-success alert-dismissible fade show m-1 text-success">
 
         <i data-feather="check-circle" class="me-1"></i>
 
@@ -53,7 +53,7 @@
 
 @if(session('error'))
 
-    <div class="alert alert-danger alert-dismissible fade show">
+    <div class="alert alert-danger alert-dismissible fade show m-1 text-danger">
 
         <i data-feather="alert-circle" class="me-1"></i>
 

@@ -11,6 +11,7 @@ class EntregaController extends Controller
 {
     /**
      * Lista o historico de entregas 
+     * Para entregadores e empresas
      */
     public function index()
     {
@@ -38,7 +39,7 @@ class EntregaController extends Controller
 
     /**
      * Mostra o formulário para criar uma nova entrega 
-     * passando os endereços da empresa logada
+     * passando os endereços salvos da empresa logada
      */
     public function create()
     {
@@ -279,10 +280,6 @@ class EntregaController extends Controller
             if ($entrega->$campoId !== $user->id) {
                 abort(403, 'Você não tem acesso a esta entrega.');
             }
-        }
-
-        if ($cargo === 'entregador') {
-            abort(403, 'Entregador não pode editar entrega.');
         }
 
         $entrega->load([

@@ -24,12 +24,12 @@
         <div class="card-body">
 
             @if ($errors->any())
-                <div class="alert alert-danger">
+                <div class="alert alert-danger m-1">
                     <strong>Verifique os dados informados:</strong>
 
                     <ul class="mb-0 mt-2">
                         @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
+                            <li class="text-danger">{{ $error }}</li>
                         @endforeach
                     </ul>
                 </div>

@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Auth;
 
 class EmpresaController extends Controller
 {
-    public function empresa()
+    public function index()
     {
         $empresa = Empresa::where('usuario_id', Auth::id())->firstOrFail();
 

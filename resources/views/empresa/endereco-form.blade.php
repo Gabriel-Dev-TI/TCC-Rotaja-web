@@ -29,14 +29,14 @@
     <div class="alert alert-danger">
 
         <strong>
-            Verifique os campos abaixo:
+            Verifique:
         </strong>
 
         <ul class="mb-0 mt-2">
 
             @foreach($errors->all() as $erro)
 
-                <li>
+                <li class="text-danger m-1">
                     {{ $erro }}
                 </li>
 
@@ -66,7 +66,7 @@
 
             @if($endereco)
 
-                @method('PUT')
+                @method('PATCH')
 
             @endif
 
@@ -82,6 +82,7 @@
                     <input
                         type="text"
                         name="logradouro"
+                        id="logradouro"
                         class="form-control"
                         value="{{ old('logradouro', $endereco->logradouro ?? '') }}"
                         required
@@ -96,7 +97,7 @@
                     </label>
 
                     <input
-                        type="text"
+                        type="number"
                         name="numero"
                         class="form-control"
                         value="{{ old('numero', $endereco->numero ?? '') }}"
@@ -114,6 +115,7 @@
                     <input
                         type="text"
                         name="bairro"
+                        id="bairro"
                         class="form-control"
                         value="{{ old('bairro', $endereco->bairro ?? '') }}"
                         required
@@ -130,6 +132,7 @@
                     <input
                         type="text"
                         name="cidade"
+                        id="cidade"
                         class="form-control"
                         value="{{ old('cidade', $endereco->cidade ?? '') }}"
                         required
@@ -146,9 +149,9 @@
                     <input
                         type="text"
                         name="estado"
+                        id="estado"
                         class="form-control"
-                        maxlength="2"
-                        placeholder="MG"
+                        placeholder="Estado"
                         value="{{ old('estado', $endereco->estado ?? '') }}"
                         required
                     >
@@ -164,6 +167,7 @@
                     <input
                         type="text"
                         name="cep"
+                        id="cep"
                         class="form-control"
                         maxlength="9"
                         placeholder="00000-000"
@@ -188,43 +192,13 @@
 
                 </div>
 
-                <div class="col-md-6 mb-3">
-
-                    <label class="form-label">
-                        Latitude
-                    </label>
-
-                    <input
-                        type="text"
-                        name="latitude"
-                        class="form-control"
-                        value="{{ old('latitude', $endereco->latitude ?? '') }}"
-                    >
-
-                </div>
-
-                <div class="col-md-6 mb-3">
-
-                    <label class="form-label">
-                        Longitude
-                    </label>
-
-                    <input
-                        type="text"
-                        name="longitude"
-                        class="form-control"
-                        value="{{ old('longitude', $endereco->longitude ?? '') }}"
-                    >
-
-                </div>
-
             </div>
 
 
             <div class="d-flex justify-content-end gap-2 mt-3">
 
                 <a
-                    href="{{ route('empresa.enderecos') }}"
+                    href="{{ route('enderecos.index') }}"
                     class="btn btn-secondary"
                 >
                     Cancelar
@@ -252,5 +226,49 @@
     </div>
 
 </div>
+<script>
+
+//Busca as informações do cep ao terminar de digitar o cep
+const cep = document.getElementById('cep');
+
+cep.addEventListener('input', async function () {
+    let valor = this.value.replace(/\D/g, '');
+
+    if (valor.length > 8) {
+        valor = valor.substring(0, 8);
+    }
+
+    this.value = valor.replace(/^(\d{5})(\d{0,3})$/, '$1-$2');
+
+    if (valor.length !== 8) {
+        return;
+    }
+
+    try {
+        const resposta = await fetch(
+            `https://viacep.com.br/ws/${valor}/json/`
+        );
+
+        if (!resposta.ok) {
+            throw new Error('Erro ao consultar CEP');
+        }
+
+        const dados = await resposta.json();
+
+        if (dados.erro) {
+            return;
+        }
+
+        document.getElementById('logradouro').value = dados.logradouro || '';
+        document.getElementById('bairro').value = dados.bairro || '';
+        document.getElementById('cidade').value = dados.localidade || '';
+        document.getElementById('estado').value = dados.estado || '';
+
+    } catch (erro) {
+        console.error('Erro ao consultar CEP:', erro);
+    }
+});
+</script>
+
 
 @endsection

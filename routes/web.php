@@ -32,7 +32,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/perfil/edit', [ProfileController::class, 'edit'])->name('perfil.edit');
     Route::patch('/perfil', [ProfileController::class, 'update'])->name('perfil.update');
     Route::delete('/perfil', [ProfileController::class, 'destroy'])->name('perfil.destroy');
-    Route::get('/historico', [EntregaController::class, 'historico'])->name('historico');
+    Route::get('/historico', [EntregaController::class, 'index'])->name('historico');
 
     // Rotas Admin
 Route::middleware(['cargo:admin'])->group(function () {
@@ -68,12 +68,12 @@ Route::middleware(['cargo:admin'])->group(function () {
 
     // Rotas Empresa
     Route::middleware(['cargo:empresa'])->group(function () {
-        Route::get('/empresa', [EmpresaController::class, 'empresa'])->name('empresa.dashboard');
+        Route::get('/empresa', [EmpresaController::class, 'index'])->name('empresa.dashboard');
         Route::get('/entregas/cadastrar', [EntregaController::class,'create'])->name('entregas.create');
         Route::post('/entregas', [EntregaController::class,'store'])->name('empresa.entregas.store');
         Route::get('/enderecos', [EnderecoController::class, 'index'])->name('enderecos.index');
         Route::get('/enderecos/cadastrar', [EnderecoController::class, 'create'])->name('empresa.enderecos.create');
-        Route::post('/enderecos', [EnderecoController::class, 'store'])->name('enderecos.store');
+        Route::post('/enderecos', [EnderecoController::class, 'store'])->name('empresa.enderecos.store');
         Route::get('/enderecos/{endereco}/editar', [EnderecoController::class, 'edit'])->name('empresa.enderecos.edit');
         Route::patch('/enderecos/{endereco}', [EnderecoController::class, 'update'])->name('empresa.enderecos.update');
         Route::delete('/enderecos/{endereco}', [EnderecoController::class, 'destroy'])->name('empresa.enderecos.destroy');
