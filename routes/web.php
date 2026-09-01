@@ -24,6 +24,16 @@ Route::get('/', function () {
     return view('landingpage');
 })->name('home');
 
+Route::get('/sitemap.xml', function () {
+    return response('<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+    <url>
+        <loc>https://rotaja.wasmer.app/</loc>
+    </url>
+
+</urlset>', 200)->header('Content-Type', 'text/xml');
+});   
 
 Route::middleware(['auth'])->group(function () {
 
