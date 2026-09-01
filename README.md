@@ -5,6 +5,8 @@
 
 O **RotaJá** é uma aplicação web desenvolvida em **Laravel** projetada para conectar empresas/estabelecimentos comerciais a entregadores parceiros de forma rápida, eficiente e simplificada.
 
+[Rota já]([https://exemplo.com](https://rotaja.wasmer.app/)) <https://rotaja.wasmer.app/>
+
 ---
 
 ## 🛠️ Tecnologias Utilizadas
