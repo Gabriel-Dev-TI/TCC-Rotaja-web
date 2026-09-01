@@ -21,6 +21,17 @@
     <meta property="og:image" content="{{ asset('img/logo.webp') }}">
     <meta property="og:locale" content="pt_BR">
 
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "RotaJá",
+    "alternateName": "Rota Já",
+    "url": "{{ url('/') }}",
+    "logo": "{{ asset('img/logo.webp') }}"
+}
+</script>
+
     <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css"
         rel="stylesheet">
@@ -833,17 +844,6 @@
 
     <!-- New Age JS -->
     <script src="{{ asset('new-age-template/js/scripts.js') }}"></script>
-
-<script type="application/ld+json">
-{
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    "name": "RotaJá",
-    "alternateName": "Rota Já",
-    "url": "{{ url('/') }}",
-    "logo": "{{ asset('img/logo.webp') }}"
-}
-</script>
 
 </body>
 
