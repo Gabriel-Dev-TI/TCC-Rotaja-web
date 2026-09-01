@@ -6,10 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <meta name="description"
-        content="RotaJá é uma plataforma para gerenciamento e realização de entregas, conectando empresas e entregadores.">
+      content="RotaJá é uma plataforma para gerenciamento e realização de entregas, conectando empresas e entregadores.">
     <meta name="author" content="RotaJá">
+    <meta name="google-site-verification" content="BzloqsDMB3hIWTsVLMNnJwMUgD3TcJ_yneR5k8f7eno" />
+    <link rel="canonical" href="https://rotaja.wasmer.app/">
 
-    <title>Rota Já</title>
+    <title>RotaJá — Gestão de Entregas e Rotas Inteligentes</title>
 
     <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css"
