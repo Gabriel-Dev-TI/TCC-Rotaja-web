@@ -8,21 +8,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <meta name="description"
-        content="RotaJá é uma plataforma de gestão de entregas que conecta empresas e entregadores, facilitando o gerenciamento de entregas, rotas e acompanhamento dos serviços.">
+        content="RotaJá é uma plataforma para gerenciamento e realização de entregas, conectando empresas e entregadores.">
 
     <meta name="author" content="RotaJá">
-
-    <meta name="robots" content="index, follow">
-
-    <meta name="googlebot" content="index, follow">
-
-    <meta name="keywords"
-        content="RotaJá, Rota Já, gestão de entregas, gestão de entregas e rotas, plataforma de entregas, entregadores, empresas, entregas, rotas inteligentes">
 
     <meta name="google-site-verification"
         content="BzloqsDMB3hIWTsVLMNnJwMUgD3TcJ_yneR5k8f7eno">
 
-    <link rel="canonical" href="{{ url('/') }}">
+    <link rel="canonical" href="https://rotaja.wasmer.app/">
 
     <title>RotaJá — Gestão de Entregas e Rotas Inteligentes</title>
 
@@ -37,12 +30,14 @@
     <meta property="og:description"
         content="Gerencie entregas, conecte empresas e entregadores e acompanhe suas rotas com o RotaJá.">
 
-    <meta property="og:url" content="{{ url('/') }}">
+    <meta property="og:url"
+        content="https://rotaja.wasmer.app/">
 
     <meta property="og:image"
         content="{{ asset('img/logo.webp') }}">
 
-    <meta property="og:locale" content="pt_BR">
+    <meta property="og:locale"
+        content="pt_BR">
 
 
     <!-- Schema.org -->
@@ -52,13 +47,9 @@
         "@context": "https://schema.org",
         "@type": "Organization",
         "name": "RotaJá",
-        "alternateName": [
-            "Rota Já",
-            "RotaJá Gestão de Entregas"
-        ],
+        "alternateName": "Rota Já",
         "url": "{{ url('/') }}",
-        "logo": "{{ asset('img/logo.webp') }}",
-        "description": "Plataforma de gestão de entregas que conecta empresas e entregadores e facilita o gerenciamento de rotas e serviços."
+        "logo": "{{ asset('img/logo.webp') }}"
     }
     </script>
 
@@ -72,7 +63,8 @@
 
     <!-- Google Fonts -->
 
-    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link rel="preconnect"
+        href="https://fonts.gstatic.com">
 
     <link
         href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,600;1,600&display=swap"
@@ -94,13 +86,123 @@
         rel="stylesheet">
 
 
+    <!-- Ajustes específicos do RotaJá -->
+
+    <style>
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            overflow-x: hidden;
+        }
+
+        .navbar-brand img {
+            max-width: 150px;
+            height: auto;
+        }
+
+        .masthead {
+            overflow: hidden;
+        }
+
+        .masthead h1 {
+            font-weight: 700;
+        }
+
+        .masthead .lead {
+            line-height: 1.7;
+        }
+
+        .text-primary {
+            color: #6f42c1 !important;
+        }
+
+        .btn-primary {
+            background-color: #6f42c1 !important;
+            border-color: #6f42c1 !important;
+        }
+
+        .btn-primary:hover,
+        .btn-primary:focus {
+            background-color: #59339d !important;
+            border-color: #59339d !important;
+        }
+
+        .text-gradient {
+            background: linear-gradient(
+                45deg,
+                #6f42c1,
+                #8e5bd9
+            );
+
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .bg-gradient-primary-to-secondary {
+            background: linear-gradient(
+                135deg,
+                #6f42c1 0%,
+                #8e5bd9 100%
+            ) !important;
+        }
+
+        .feature-icon {
+            font-size: 4rem;
+        }
+
+        .section-title {
+            font-weight: 700;
+        }
+
+        .device img {
+            display: block;
+        }
+
+        @media (max-width: 991.98px) {
+
+            .navbar-brand img {
+                width: 130px !important;
+            }
+
+            .masthead {
+                padding-top: 8rem;
+                padding-bottom: 5rem;
+            }
+
+        }
+
+        @media (max-width: 575.98px) {
+
+            .masthead {
+                padding-left: 0;
+                padding-right: 0;
+            }
+
+            .masthead h1 {
+                font-size: 3rem;
+            }
+
+            .masthead-device-mockup {
+                margin-top: 2rem;
+            }
+
+        }
+
+    </style>
+
 </head>
 
 
 <body id="page-top">
 
 
+    <!-- ========================================================= -->
     <!-- NAVBAR -->
+    <!-- ========================================================= -->
 
     <nav
         class="navbar navbar-expand-lg navbar-light fixed-top shadow-sm"
@@ -114,7 +216,7 @@
 
                 <img
                     src="{{ asset('img/logo.webp') }}"
-                    alt="RotaJá - Gestão de Entregas"
+                    alt="RotaJá"
                     class="img-fluid"
                     style="width: 150px; height: auto;">
 
@@ -141,8 +243,10 @@
                 class="collapse navbar-collapse"
                 id="navbarResponsive">
 
+
                 <ul
                     class="navbar-nav ms-auto me-4 my-3 my-lg-0">
+
 
                     <li class="nav-item">
 
@@ -182,6 +286,7 @@
 
                     </li>
 
+
                 </ul>
 
 
@@ -199,6 +304,7 @@
 
                 </a>
 
+
             </div>
 
         </div>
@@ -207,7 +313,9 @@
 
 
 
+    <!-- ========================================================= -->
     <!-- HERO -->
+    <!-- ========================================================= -->
 
     <header class="masthead">
 
@@ -215,6 +323,8 @@
 
             <div class="row gx-5 align-items-center">
 
+
+                <!-- Texto -->
 
                 <div class="col-lg-6">
 
@@ -238,11 +348,9 @@
                         <p
                             class="lead fw-normal text-muted mb-5">
 
-                            O <strong>RotaJá</strong> é uma plataforma de
-                            gestão de entregas que conecta empresas e
-                            entregadores para tornar o gerenciamento e a
-                            realização de entregas mais simples,
-                            organizados e eficientes.
+                            O RotaJá conecta empresas e entregadores
+                            para tornar o gerenciamento e a realização
+                            de entregas mais simples, organizados e eficientes.
 
                         </p>
 
@@ -252,10 +360,10 @@
 
 
                             <a
-                                href="{{ url('/login') }}"
+                                href="#download"
                                 class="btn btn-primary rounded-pill px-4 mb-3 mb-lg-0 me-lg-3">
 
-                                Acessar plataforma
+                                Baixe o App
 
                             </a>
 
@@ -271,16 +379,21 @@
 
                         </div>
 
+
                     </div>
 
                 </div>
 
 
 
+                <!-- Celular -->
+
                 <div class="col-lg-6">
 
                     <div class="masthead-device-mockup">
 
+
+                        <!-- Círculo -->
 
                         <svg
                             class="circle"
@@ -296,13 +409,11 @@
                                     <stop
                                         class="gradient-start-color"
                                         offset="0%">
-
                                     </stop>
 
                                     <stop
                                         class="gradient-end-color"
                                         offset="100%">
-
                                     </stop>
 
                                 </linearGradient>
@@ -314,12 +425,13 @@
                                 cx="50"
                                 cy="50"
                                 r="50">
-
                             </circle>
 
                         </svg>
 
 
+
+                        <!-- Forma 1 -->
 
                         <svg
                             class="shape-1 d-none d-sm-block"
@@ -335,7 +447,6 @@
                                 transform="translate(120.42 -49.88) rotate(45)">
                             </rect>
 
-
                             <rect
                                 x="-32.54"
                                 y="78.39"
@@ -349,6 +460,8 @@
 
 
 
+                        <!-- Forma 2 -->
+
                         <svg
                             class="shape-2 d-none d-sm-block"
                             viewBox="0 0 100 100"
@@ -358,12 +471,13 @@
                                 cx="50"
                                 cy="50"
                                 r="50">
-
                             </circle>
 
                         </svg>
 
 
+
+                        <!-- Device -->
 
                         <div class="device-wrapper">
 
@@ -379,14 +493,19 @@
                                     <img
                                         src="{{ asset('new-age-template/assets/img/celular.webp') }}"
                                         class="img-fluid"
-                                        alt="Aplicativo RotaJá para gerenciamento de entregas"
-                                        style="width: 100%; height: 100%; object-fit: cover;">
+                                        alt="Aplicativo RotaJá"
+                                        style="
+                                            width: 100%;
+                                            height: 100%;
+                                            object-fit: cover;
+                                        ">
 
                                 </div>
 
                             </div>
 
                         </div>
+
 
                     </div>
 
@@ -401,14 +520,17 @@
 
 
 
-    <!-- DESTAQUE -->
+    <!-- ========================================================= -->
+    <!-- FRASE -->
+    <!-- ========================================================= -->
 
     <aside
         class="text-center bg-gradient-primary-to-secondary">
 
         <div class="container px-5">
 
-            <div class="row gx-5 justify-content-center">
+            <div
+                class="row gx-5 justify-content-center">
 
                 <div class="col-xl-8">
 
@@ -431,7 +553,9 @@
 
 
 
-    <!-- SOLUÇÃO -->
+    <!-- ========================================================= -->
+    <!-- COMO FUNCIONA -->
+    <!-- ========================================================= -->
 
     <section id="solucao">
 
@@ -441,18 +565,19 @@
                 class="row gx-5 align-items-center">
 
 
+                <!-- Recursos -->
+
                 <div
                     class="col-lg-8 order-lg-1 mb-5 mb-lg-0">
 
 
-                    <div
-                        class="container-fluid px-5">
+                    <div class="container-fluid px-5">
 
 
                         <div class="row gx-5">
 
 
-                            <!-- FEATURE 1 -->
+                            <!-- Recurso 1 -->
 
                             <div class="col-md-6 mb-5">
 
@@ -463,19 +588,18 @@
                                     </i>
 
 
-                                    <h2 class="font-alt h3">
+                                    <h3 class="font-alt">
 
                                         Criação de entregas
 
-                                    </h2>
+                                    </h3>
 
 
                                     <p class="text-muted mb-0">
 
                                         Cadastre produtos, endereços,
-                                        peso, dimensões e demais
-                                        informações necessárias para
-                                        realizar uma entrega.
+                                        peso, dimensões e demais informações
+                                        necessárias para a entrega.
 
                                     </p>
 
@@ -485,7 +609,7 @@
 
 
 
-                            <!-- FEATURE 2 -->
+                            <!-- Recurso 2 -->
 
                             <div class="col-md-6 mb-5">
 
@@ -496,11 +620,11 @@
                                     </i>
 
 
-                                    <h2 class="font-alt h3">
+                                    <h3 class="font-alt">
 
                                         Conexão com entregadores
 
-                                    </h2>
+                                    </h3>
 
 
                                     <p class="text-muted mb-0">
@@ -523,7 +647,7 @@
                         <div class="row">
 
 
-                            <!-- FEATURE 3 -->
+                            <!-- Recurso 3 -->
 
                             <div
                                 class="col-md-6 mb-5 mb-md-0">
@@ -535,11 +659,11 @@
                                     </i>
 
 
-                                    <h2 class="font-alt h3">
+                                    <h3 class="font-alt">
 
                                         Rotas
 
-                                    </h2>
+                                    </h3>
 
 
                                     <p class="text-muted mb-0">
@@ -556,7 +680,7 @@
 
 
 
-                            <!-- FEATURE 4 -->
+                            <!-- Recurso 4 -->
 
                             <div class="col-md-6">
 
@@ -567,11 +691,11 @@
                                     </i>
 
 
-                                    <h2 class="font-alt h3">
+                                    <h3 class="font-alt">
 
                                         Acompanhamento
 
-                                    </h2>
+                                    </h3>
 
 
                                     <p class="text-muted mb-0">
@@ -589,18 +713,18 @@
 
                         </div>
 
+
                     </div>
 
                 </div>
 
 
 
-                <!-- MOCKUP -->
+                <!-- Mockup -->
 
                 <div class="col-lg-4 order-lg-0">
 
-                    <div
-                        class="features-device-mockup">
+                    <div class="features-device-mockup">
 
 
                         <svg
@@ -653,7 +777,6 @@
                                 transform="translate(120.42 -49.88) rotate(45)">
                             </rect>
 
-
                             <rect
                                 x="-32.54"
                                 y="78.39"
@@ -696,14 +819,19 @@
                                     <img
                                         src="{{ asset('new-age-template/assets/img/celularMapa.webp') }}"
                                         class="img-fluid"
-                                        alt="Mapa e rotas do aplicativo RotaJá"
-                                        style="width: 100%; height: 100%; object-fit: cover;">
+                                        alt="Mapa do aplicativo RotaJá"
+                                        style="
+                                            width: 100%;
+                                            height: 100%;
+                                            object-fit: cover;
+                                        ">
 
                                 </div>
 
                             </div>
 
                         </div>
+
 
                     </div>
 
@@ -718,12 +846,13 @@
 
 
 
+    <!-- ========================================================= -->
     <!-- EMPRESAS E ENTREGADORES -->
+    <!-- ========================================================= -->
 
     <section
         class="bg-light"
         id="empresas">
-
 
         <div class="container px-5">
 
@@ -755,16 +884,18 @@
                             </h2>
 
 
-                            <p class="text-muted mb-4">
+                            <p
+                                class="text-muted mb-4">
 
-                                Tenha mais controle sobre suas entregas
-                                e centralize as informações dos pedidos
-                                em um único lugar.
+                                Tenha mais controle sobre suas
+                                entregas e centralize as informações
+                                dos pedidos em um único lugar.
 
                             </p>
 
 
-                            <ul class="list-unstyled text-muted">
+                            <ul
+                                class="list-unstyled text-muted">
 
 
                                 <li class="mb-3">
@@ -825,15 +956,6 @@
                             </ul>
 
 
-                            <a
-                                href="{{ route('registro', ['tipo' => 'empresa']) }}"
-                                class="btn btn-primary rounded-pill px-4 mt-3">
-
-                                Cadastrar empresa
-
-                            </a>
-
-
                         </div>
 
                     </div>
@@ -848,10 +970,8 @@
                     class="col-lg-6"
                     id="entregadores">
 
-
                     <div
                         class="p-4 p-lg-5">
-
 
                         <div
                             class="text-center text-lg-start">
@@ -870,16 +990,18 @@
                             </h2>
 
 
-                            <p class="text-muted mb-4">
+                            <p
+                                class="text-muted mb-4">
 
-                                Encontre oportunidades de entrega e
-                                acompanhe seus serviços de forma simples
-                                e organizada.
+                                Encontre oportunidades de entrega
+                                e acompanhe seus serviços de forma
+                                simples e organizada.
 
                             </p>
 
 
-                            <ul class="list-unstyled text-muted">
+                            <ul
+                                class="list-unstyled text-muted">
 
 
                                 <li class="mb-3">
@@ -940,15 +1062,6 @@
                             </ul>
 
 
-                            <a
-                                href="{{ route('registro', ['tipo' => 'entregador']) }}"
-                                class="btn btn-primary rounded-pill px-4 mt-3">
-
-                                Cadastrar como entregador
-
-                            </a>
-
-
                         </div>
 
                     </div>
@@ -964,7 +1077,9 @@
 
 
 
-    <!-- COMO FUNCIONA -->
+    <!-- ========================================================= -->
+    <!-- PROCESSO -->
+    <!-- ========================================================= -->
 
     <section>
 
@@ -978,7 +1093,8 @@
                     class="col-lg-6 mb-5 mb-lg-0">
 
 
-                    <h2 class="display-5 lh-1 mb-4">
+                    <h2
+                        class="display-5 lh-1 mb-4">
 
                         Do cadastro à entrega concluída.
 
@@ -1022,8 +1138,9 @@
 
                             <p class="text-muted mb-0">
 
-                                As informações do produto, origem e destino
-                                são registradas na plataforma.
+                                As informações do produto,
+                                origem e destino são registradas
+                                na plataforma.
 
                             </p>
 
@@ -1060,8 +1177,9 @@
 
                             <p class="text-muted mb-0">
 
-                                O entregador visualiza as oportunidades
-                                disponíveis e pode aceitar uma entrega.
+                                O entregador visualiza as
+                                oportunidades disponíveis e
+                                pode aceitar uma entrega.
 
                             </p>
 
@@ -1098,8 +1216,8 @@
 
                             <p class="text-muted mb-0">
 
-                                O serviço avança pelos seus status
-                                até chegar à conclusão.
+                                O serviço avança pelos seus
+                                status até chegar à conclusão.
 
                             </p>
 
@@ -1111,6 +1229,8 @@
                 </div>
 
 
+
+                <!-- LADO DIREITO -->
 
                 <div class="col-lg-6">
 
@@ -1127,11 +1247,12 @@
                             </i>
 
 
-                            <h2 class="font-alt mt-4">
+                            <h3
+                                class="font-alt mt-4">
 
                                 RotaJá
 
-                            </h2>
+                            </h3>
 
 
                             <p class="text-muted">
@@ -1143,6 +1264,7 @@
 
 
                         </div>
+
 
                     </div>
 
@@ -1157,80 +1279,18 @@
 
 
 
-    <!-- SEO / SOBRE O ROTAJÁ -->
-
-    <section
-        class="bg-light"
-        id="sobre">
-
-
-        <div class="container px-5">
-
-            <div
-                class="row justify-content-center">
-
-
-                <div class="col-lg-9 text-center">
-
-
-                    <h2 class="display-6 mb-4">
-
-                        RotaJá: gestão de entregas de forma simples
-
-                    </h2>
-
-
-                    <p class="lead text-muted">
-
-                        O <strong>RotaJá</strong>, também conhecido como
-                        <strong>Rota Já</strong>, é uma plataforma
-                        desenvolvida para facilitar a gestão de entregas
-                        e a conexão entre empresas e entregadores.
-
-                    </p>
-
-
-                    <p class="text-muted">
-
-                        Com o RotaJá, empresas podem cadastrar entregas,
-                        organizar endereços, acompanhar o andamento dos
-                        serviços e consultar seu histórico. Entregadores
-                        podem visualizar oportunidades disponíveis,
-                        aceitar serviços e acompanhar suas entregas.
-
-                    </p>
-
-
-                    <p class="text-muted mb-0">
-
-                        A plataforma busca tornar o processo de entrega
-                        mais organizado, proporcionando uma experiência
-                        mais simples para empresas e profissionais que
-                        realizam entregas.
-
-                    </p>
-
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </section>
-
-
-
+    <!-- ========================================================= -->
     <!-- CTA -->
+    <!-- ========================================================= -->
 
     <section
         class="bg-gradient-primary-to-secondary"
         id="download">
 
-
         <div class="container px-5">
 
-            <div class="text-center text-white">
+            <div
+                class="text-center text-white">
 
 
                 <h2
@@ -1266,11 +1326,12 @@
 
 
 
+    <!-- ========================================================= -->
     <!-- FOOTER -->
+    <!-- ========================================================= -->
 
     <footer
         class="bg-black text-center py-5">
-
 
         <div class="container px-5">
 
@@ -1279,13 +1340,17 @@
 
                 <img
                     src="{{ asset('img/logo.webp') }}"
-                    alt="RotaJá - Gestão de Entregas"
-                    style="width: 130px; filter: brightness(0) invert(1);">
+                    alt="RotaJá"
+                    style="
+                        width: 130px;
+                        filter: brightness(0) invert(1);
+                    ">
 
             </div>
 
 
-            <div class="text-white-50 small">
+            <div
+                class="text-white-50 small">
 
 
                 <div class="mb-3">
@@ -1297,15 +1362,8 @@
                 </div>
 
 
-                <div>
-
-                    Gestão de entregas e rotas para empresas
-                    e entregadores.
-
-                </div>
-
-
             </div>
+
 
         </div>
 
@@ -1313,14 +1371,18 @@
 
 
 
-    <!-- Bootstrap JS -->
+    <!-- ========================================================= -->
+    <!-- BOOTSTRAP JS -->
+    <!-- ========================================================= -->
 
     <script
         src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js">
     </script>
 
 
-    <!-- New Age JS -->
+    <!-- ========================================================= -->
+    <!-- NEW AGE JS -->
+    <!-- ========================================================= -->
 
     <script
         src="{{ asset('new-age-template/js/scripts.js') }}">
