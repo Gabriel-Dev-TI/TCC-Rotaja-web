@@ -13,6 +13,14 @@
 
     <title>RotaJá — Gestão de Entregas e Rotas Inteligentes</title>
 
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="RotaJá — Gestão de Entregas e Rotas Inteligentes">
+    <meta property="og:description"
+          content="Gerencie entregas, conecte empresas e entregadores e acompanhe suas rotas com o RotaJá.">
+    <meta property="og:url" content="https://rotaja.wasmer.app/">
+    <meta property="og:image" content="{{ asset('img/logo.webp') }}">
+    <meta property="og:locale" content="pt_BR">
+
     <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css"
         rel="stylesheet">
