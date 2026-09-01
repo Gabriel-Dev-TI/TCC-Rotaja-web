@@ -834,6 +834,17 @@
     <!-- New Age JS -->
     <script src="{{ asset('new-age-template/js/scripts.js') }}"></script>
 
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "RotaJá",
+    "alternateName": "Rota Já",
+    "url": "{{ url('/') }}",
+    "logo": "{{ asset('img/logo.webp') }}"
+}
+</script>
+
 </body>
 
 </html>
