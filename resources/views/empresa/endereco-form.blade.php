@@ -226,6 +226,9 @@
     </div>
 
 </div>
+
+<script src="https://unpkg.com/imask"></script>   
+
 <script>
 
 //Busca as informações do cep ao terminar de digitar o cep
@@ -234,15 +237,9 @@ const cep = document.getElementById('cep');
 cep.addEventListener('input', async function () {
     let valor = this.value.replace(/\D/g, '');
 
-    if (valor.length > 8) {
-        valor = valor.substring(0, 8);
-    }
+    IMask(document.getElementById('cep'), { mask: '00000-000' });
 
-    this.value = valor.replace(/^(\d{5})(\d{0,3})$/, '$1-$2');
-
-    if (valor.length !== 8) {
-        return;
-    }
+    if (valor.length !== 8) return;
 
     try {
         const resposta = await fetch(

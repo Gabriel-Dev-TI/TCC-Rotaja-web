@@ -420,4 +420,12 @@
 
 </div>
 
+<script src="https://unpkg.com/imask"></script>   
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    IMask(document.getElementById('telefone'), { mask: '(00) 00000-0000' });
+});
+</script>   
+
 @endsection

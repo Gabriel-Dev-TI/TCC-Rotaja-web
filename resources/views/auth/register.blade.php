@@ -94,6 +94,8 @@
                                     class="form-control form-control-lg"
                                     type="tel"
                                     name="telefone"
+                                    id="telefone"
+                                    maxlength="20"
                                     value="{{ old('telefone') }}"
                                     placeholder="Insira seu telefone"
                                     required
@@ -171,6 +173,8 @@
                                         class="form-control form-control-lg"
                                         type="text"
                                         name="cnpj"
+                                        id="cnpj"
+                                        maxlength="18"
                                         value="{{ old('cnpj') }}"
                                         placeholder="Insira o CNPJ"
                                     >
@@ -204,6 +208,7 @@
                                         type="text"
                                         name="cep"
                                         id="cep"
+                                        maxlength="9"
                                         value="{{ old('cep') }}"
                                         placeholder="Insira o CEP"
                                     >
@@ -394,6 +399,8 @@
                                         class="form-control form-control-lg"
                                         type="text"
                                         name="cpf"
+                                        id="cpf"
+                                        maxlength="14"
                                         value="{{ old('cpf') }}"
                                         placeholder="Insira o CPF"
                                     >
@@ -548,35 +555,29 @@
 
 </div>
 
+<script src="https://unpkg.com/imask"></script>   
 
 <script>
 
-//Ao selecionar o tipo de conta faz aparecer o formulario do tipo de conta
 document.addEventListener('DOMContentLoaded', function () {
 
+    //Formatação dos campos
+    IMask(document.getElementById('cpf'), { mask: '000.000.000-00' });
+    IMask(document.getElementById('cnpj'), { mask: '00.000.000/0000-00' });
+    IMask(document.getElementById('cep'), { mask: '00000-000' });
+    IMask(document.getElementById('telefone'), { mask: '(00) 00000-0000' });
+
+    //Ao selecionar o tipo de conta faz aparecer o formulario do tipo de conta
     const tipoConta = document.getElementById('tipoConta');
-
-    const camposEmpresa =
-        document.getElementById('camposEmpresa');
-
-    const camposEntregador =
-        document.getElementById('camposEntregador');
-
+    const camposEmpresa = document.getElementById('camposEmpresa');
+    const camposEntregador = document.getElementById('camposEntregador');
 
     function atualizarCampos() {
-
         camposEmpresa.style.display = tipoConta.value === 'empresa' ? 'block' : 'none';
-
         camposEntregador.style.display = tipoConta.value === 'entregador' ? 'block' : 'none';
-
     }
 
-    tipoConta.addEventListener(
-        'change',
-        atualizarCampos
-    );
-
-
+    tipoConta.addEventListener('change',atualizarCampos);
     atualizarCampos();
 
 });
@@ -586,17 +587,9 @@ document.addEventListener('DOMContentLoaded', function () {
 const cep = document.getElementById('cep');
 
 cep.addEventListener('input', async function () {
-    let valor = this.value.replace(/\D/g, '');
+     let valor = this.value.replace(/\D/g, '');
 
-    if (valor.length > 8) {
-        valor = valor.substring(0, 8);
-    }
-
-    this.value = valor.replace(/^(\d{5})(\d{0,3})$/, '$1-$2');
-
-    if (valor.length !== 8) {
-        return;
-    }
+    if (valor.length !== 8) return;
 
     try {
         const resposta = await fetch(

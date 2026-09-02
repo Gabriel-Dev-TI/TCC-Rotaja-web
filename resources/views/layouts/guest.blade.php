@@ -34,7 +34,7 @@
     <div class="main d-flex flex-column min-vh-100">
 
         <nav class="navbar navbar-expand navbar-light navbar-bg px-3 fixed-top">
-			<a href="/">
+			<a href="/" class="px-2 py-1">
 				<img
             src="{{ asset('img/logo.webp') }}"
             alt="RotaJá"
