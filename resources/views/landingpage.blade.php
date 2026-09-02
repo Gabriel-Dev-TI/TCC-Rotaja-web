@@ -9,7 +9,28 @@
         content="RotaJá é uma plataforma para gerenciamento e realização de entregas, conectando empresas e entregadores.">
     <meta name="author" content="RotaJá">
 
-    <title>Rota Já</title>
+    <meta name="google-site-verification" content="BzloqsDMB3hIWTsVLMNnJwMUgD3TcJ_yneR5k8f7eno" />
+    <link rel="canonical" href="https://rotaja.wasmer.app/">
+
+    <title>RotaJá — Gestão de Entregas e Rotas Inteligentes</title>
+
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="RotaJá — Gestão de Entregas e Rotas Inteligentes">
+    <meta property="og:description" content="Gerencie entregas, conecte empresas e entregadores e acompanhe suas rotas com o RotaJá.">
+    <meta property="og:url" content="https://rotaja.wasmer.app/">
+    <meta property="og:image" content="{{ asset('img/logo.webp') }}">
+    <meta property="og:locale" content="pt_BR">
+
+    <script type="application/ld+json">
+    {
+        "@@context": "https://schema.org",
+        "@@type": "Organization",
+        "name": "RotaJá",
+        "alternateName": "Rota Já",
+        "url": "{{ url('/') }}",
+        "logo": "{{ asset('img/logo.webp') }}"
+    }
+    </script>
 
     <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css"
