@@ -74,12 +74,12 @@ class EntregaController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'nome_produto' => 'required|string',
-            'descricao' => 'required|string',
-            'largura' => 'required|numeric|min:0',
-            'altura' => 'required|numeric|min:0',
-            'peso' => 'required|numeric|min:0',
-            'comprimento' => 'required|numeric|min:0',
+            'nome_produto' => 'required|string|max:255',
+            'descricao' => 'nullable|string',
+            'largura' => 'required|numeric|min:0|max:1000',
+            'altura' => 'required|numeric|min:0|max:1000',
+            'peso' => 'required|numeric|min:0|max:1000',
+            'comprimento' => 'required|numeric|min:0|max:1000',
             'origem' => 'required|integer|exists:enderecos,id',
             'destino' => 'required|integer|exists:enderecos,id',
         ]);

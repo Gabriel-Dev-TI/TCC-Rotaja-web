@@ -77,10 +77,10 @@ class EntregaController extends Controller
             'nome_produto' => ['required','string','max:255'],
             'endereco_origem_id' => ['required','integer','exists:enderecos,id'],
             'endereco_destino_id' => ['required','integer','exists:enderecos,id'],
-            'altura' => ['required','numeric','min:0'],
-            'largura' => ['required','numeric','min:0'],
-            'comprimento' => ['required','numeric','min:0'],
-            'peso' => ['required','numeric','min:0'],
+            'altura' => ['required','numeric','min:0','max:1000'],
+            'largura' => ['required','numeric','min:0','max:1000'],
+            'comprimento' => ['required','numeric','min:0','max:1000'],
+            'peso' => ['required','numeric','min:0','max:1000'],
             'descricao' => ['nullable','string'],
 
         ]);
