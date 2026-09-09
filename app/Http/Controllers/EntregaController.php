@@ -141,12 +141,13 @@ class EntregaController extends Controller
         try {
 
             $url =
-            'https://router.project-osrm.org/route/v1/driving/' .
-            $origem->longitude . ',' .
-            $origem->latitude . ';' .
-            $destino->longitude . ',' .
-            $destino->latitude .
-            '?overview=false';
+                'https://api.mapbox.com/directions/v5/mapbox/driving/' .
+                $origem->longitude . ',' .
+                $origem->latitude . ';' .
+                $destino->longitude . ',' .
+                $destino->latitude .
+                '?overview=false' .
+                '&access_token=' . config('services.mapbox.public_token');
 
             // Espera 10 segundos para a resposta da API
             $response = Http::timeout(10)->get($url);

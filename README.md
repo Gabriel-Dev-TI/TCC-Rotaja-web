@@ -9,16 +9,17 @@ O **RotaJá** é uma aplicação web desenvolvida em **Laravel** projetada para 
 
 ## 🛠️ Tecnologias Utilizadas
 
-* **API's:** 
-    * **`ArcGIS`**: Pega as cordenadas do endereço
-    * **`ViaCEP`**: Pega os dados do endereço pelo CEP
-    * **`Leaflet`**:controla o mapa na página
-    * **`OpenStreetMap`**: fornece as imagens do mapa
-    * **`OSRM`**: calcula a rota pelas ruas entre origem e destino
-    
-    
-* **Banco de Dados:** MySQL 
-* **Autenticação:** Breeze
+* **APIs e Serviços Externos:**
+
+    * **`ViaCEP`**: Consulta os dados do endereço a partir do CEP.
+
+    * **`ArcGIS`**: Realiza a geocodificação dos endereços, obtendo suas coordenadas (latitude e longitude).
+
+    * **`Mapbox`**: Responsável pela exibição dos mapas, localização do entregador e cálculo das rotas pelas ruas entre origem e destino.
+
+* **Banco de Dados:** MySQL
+
+* **Autenticação:** Laravel Breeze
 
 ---
 

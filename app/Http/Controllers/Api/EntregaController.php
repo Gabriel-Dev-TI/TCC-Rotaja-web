@@ -140,20 +140,28 @@ class EntregaController extends Controller
             ], 422);
         }
 
-        try {
-            $url = 'https://router.project-osrm.org/route/v1/driving/' .
+         try {
+
+            $url =
+                'https://api.mapbox.com/directions/v5/mapbox/driving/' .
                 $origem->longitude . ',' .
                 $origem->latitude . ';' .
                 $destino->longitude . ',' .
                 $destino->latitude .
-                '?overview=false';
+                '?overview=false' .
+                '&access_token=' . config('services.mapbox.public_token');
 
+            // Espera 10 segundos para a resposta da API
             $response = Http::timeout(10)->get($url);
+
         } catch (\Throwable $e) {
-            return response()->json([
-                'sucesso' => false,
-                'mensagem' => 'Não foi possível calcular a rota via API OSRM.'
-            ], 500);
+
+            return back()
+                ->withInput()
+                ->withErrors([
+                    'endereco' =>
+                        'Não foi possível calcular a rota.'
+                ]);
         }
 
         if (
