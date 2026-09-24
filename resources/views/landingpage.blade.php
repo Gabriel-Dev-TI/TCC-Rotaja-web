@@ -147,7 +147,7 @@
                         <div class="d-flex flex-column flex-lg-row align-items-center">
 
                             <a
-                                href="#"
+                                href="rotaja.apk"
                                 class="btn btn-primary rounded-pill px-4 mb-3 mb-lg-0 me-lg-3"
                             >
                                 Baixe o App
