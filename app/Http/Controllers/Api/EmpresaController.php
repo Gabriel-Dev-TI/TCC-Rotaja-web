@@ -51,6 +51,59 @@ class EmpresaController extends Controller
         return response()->json(['sucesso' => true, 'dados' => $endereco], 201);
     }
 
+    public function atualizarEndereco(Request $request, string $id)
+    {
+        $validator = Validator::make($request->all(), [
+            'logradouro'  => 'required|string|max:255',
+            'numero'      => 'required|string',
+            'bairro'      => 'required|string|max:255',
+            'cidade'      => 'required|string|max:255',
+            'estado'      => 'required|string',
+            'cep'         => 'required|string|max:9',
+            'complemento' => 'nullable|string|max:255',
+            'latitude'    => 'nullable|numeric',
+            'longitude'   => 'nullable|numeric',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'sucesso'  => false,
+                'mensagem' => $validator->errors()->first()
+            ], 422);
+        }
+
+        $usuario = Auth::user();
+        $empresa = $usuario->empresa;
+
+        $endereco = Endereco::where('id', $id)
+            ->where('empresa_id', $empresa->id)
+            ->firstOrFail();
+
+        $endereco->update($validator->validated());
+
+        return response()->json([
+            'sucesso' => true,
+            'dados'   => $endereco,
+        ]);
+    }
+
+    public function deletarEndereco(string $id)
+    {
+        $usuario = Auth::user();
+        $empresa = $usuario->empresa;
+
+        $endereco = Endereco::where('id', $id)
+            ->where('empresa_id', $empresa->id)
+            ->firstOrFail();
+
+        $endereco->delete();
+
+        return response()->json([
+            'sucesso'  => true,
+            'mensagem' => 'Endereço removido com sucesso',
+        ]);
+    }   
+
     public function index()
     {
         return response()->json(['sucesso' => true, 'dados' => Empresa::with(['usuario', 'endereco'])->get()]);

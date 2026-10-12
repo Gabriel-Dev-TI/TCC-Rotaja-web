@@ -170,7 +170,7 @@
 
         </li>
 
-        <li class="sidebar-item {{ request()->routeIs('enderecos.*') || request()->routeIs('empresa.enderecos.*')  ? 'active' : '' }}">
+        <li class="sidebar-item {{ request()->routeIs('enderecos.*') || request()->routeIs('enderecos.*')  ? 'active' : '' }}">
 
             <a
                 class="sidebar-link"

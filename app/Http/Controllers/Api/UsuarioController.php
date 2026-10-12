@@ -76,6 +76,23 @@ class UsuarioController extends Controller
     ],200);
     }
 
+    public function atualizarPerfil(Request $request)
+    {
+        $request->validate([
+            'nome'     => ['required', 'string', 'max:255'],
+            'email'    => ['required', 'email', 'max:255', 'unique:usuarios,email,' . $request->user()->id],
+            'telefone' => ['nullable', 'string', 'max:20'],
+        ]);
+
+        $user = $request->user();
+        $user->update($request->only(['nome', 'email', 'telefone']));
+
+        return response()->json([
+            'mensagem' => 'Perfil atualizado com sucesso.',
+            'dados'    => $user->only(['nome', 'email', 'telefone']),
+        ]);
+    }   
+
     public function atualizarSenha(Request $request)
     {
         $request->validate([
@@ -146,4 +163,5 @@ class UsuarioController extends Controller
         'dados' => $historico
     ]);
 }
+
 }

@@ -20,10 +20,14 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/logout', [UsuarioController::class, 'logout']);
     Route::get('/verifica-dados', [UsuarioController::class, 'verificaDados']);
     Route::put('/atualizar-senha', [UsuarioController::class, 'atualizarSenha']);
+    Route::put('/perfil', [UsuarioController::class, 'atualizarPerfil']);   
 
     //Listagens
     Route::get('/historico', [UsuarioController::class, 'historico']);
     Route::apiResource('entregas', EntregaController::class);
 
+    //Endereços
     Route::post('/enderecos',[EmpresaController::class,'endereco']);
+    Route::put('/enderecos/{endereco}', [EmpresaController::class, 'atualizarEndereco']);
+    Route::delete('/enderecos/{endereco}', [EmpresaController::class, 'deletarEndereco']);   
 });

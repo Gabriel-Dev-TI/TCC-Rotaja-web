@@ -20,7 +20,7 @@
 
 
     <a
-        href="{{ route('empresa.enderecos.create') }}"
+        href="{{ route('enderecos.create') }}"
         class="btn btn-primary d-flex align-items-center gap-2"
     >
 
@@ -134,10 +134,17 @@
 
                 </div>
 
-
-                <span class="badge bg-primary">
-                    Principal
-                </span>
+                <div class="row">
+                    <span class="badge bg-primary">
+                        Principal
+                    </span>
+                    <a
+                href="{{ route('enderecos.edit', $enderecoEmpresa) }}"
+                class="btn btn-sm btn-outline-primary my-2"
+                title="Editar">
+                    <i data-feather="edit-2"></i>
+                    </a>
+                </div>
 
             </div>
 
@@ -262,7 +269,7 @@
                             <div class="d-flex justify-content-end gap-1">
 
                                 <a
-                                    href="{{ route('empresa.enderecos.edit', $endereco) }}"
+                                    href="{{ route('enderecos.edit', $endereco) }}"
                                     class="btn btn-sm btn-outline-primary"
                                     title="Editar"
                                 >
@@ -274,7 +281,7 @@
 
                                 <form
                                     method="POST"
-                                    action="{{ route('empresa.enderecos.destroy', $endereco) }}"
+                                    action="{{ route('enderecos.destroy', $endereco) }}"
                                     onsubmit="return confirm('Deseja realmente excluir este endereço?')"
                                 >
 

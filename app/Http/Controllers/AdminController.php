@@ -163,6 +163,4 @@ class AdminController extends Controller
             'Entrega removida com sucesso.'
         );
     }
-
-    // Falta ainda o criar e editar de cada um..
 }

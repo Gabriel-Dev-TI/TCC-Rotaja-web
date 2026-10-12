@@ -57,8 +57,8 @@
             method="POST"
             action="{{
                 $endereco
-                    ? route('empresa.enderecos.update', $endereco)
-                    : route('empresa.enderecos.store')
+                    ? route('enderecos.update', $endereco)
+                    : route('enderecos.store')
             }}"
         >
 
