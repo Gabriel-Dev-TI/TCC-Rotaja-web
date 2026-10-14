@@ -15,7 +15,7 @@ class EntregadorController extends Controller
 {
     public function index()
     {
-        return response()->json(['sucesso' => true, 'dados' => Entregador::with('usuario')->get()]);
+        return response()->json(['dados' => Entregador::with('usuario')->get()]);
     }
 
     public function store(Request $request)
@@ -31,7 +31,6 @@ class EntregadorController extends Controller
 
         if ($validator->fails()) {
             return response()->json([
-                'sucesso' => false,
                 'mensagem' => $validator->errors()->first()
             ], 422);
         }
@@ -58,7 +57,6 @@ class EntregadorController extends Controller
             $usuario->load('entregador');
 
             return response()->json([
-                'sucesso' => true,
                 'token' => $token,
                 'usuario' => $usuario,
             ], 201);
@@ -69,7 +67,7 @@ class EntregadorController extends Controller
     {
         $entregador = Entregador::with('usuario')->findOrFail($id);
 
-        return response()->json(['sucesso' => true, 'dados' => $entregador]);
+        return response()->json(['dados' => $entregador]);
     }
 
     public function update(Request $request, string $id)
@@ -77,7 +75,7 @@ class EntregadorController extends Controller
         $entregador = Entregador::findOrFail($id);
         $entregador->update($request->all());
 
-        return response()->json(['sucesso' => true, 'dados' => $entregador]);
+        return response()->json(['dados' => $entregador]);
     }
 
     public function destroy(string $id)
@@ -85,7 +83,7 @@ class EntregadorController extends Controller
         $entregador = Entregador::findOrFail($id);
         $entregador->delete();
 
-        return response()->json(['sucesso' => true, 'mensagem' => 'Entregador removido com sucesso']);
+        return response()->json(['mensagem' => 'Entregador removido com sucesso']);
     }
 
 }

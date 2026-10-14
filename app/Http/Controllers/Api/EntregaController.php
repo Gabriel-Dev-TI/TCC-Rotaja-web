@@ -16,39 +16,38 @@ class EntregaController extends Controller
     {
         $usuario = Auth::user();
 
-        // Para o entregador: retorna entregas pendentes e as que ele aceitou
+        // Para o entregador: retorna entregas que ele aceitou, se não tiver ai mostra as pendentes
         if ($usuario->cargo == 'entregador') {
             if (!$usuario->entregador) {
                 return response()->json([
-                    'sucesso' => false,
                     'mensagem' => 'Perfil de entregador não encontrado.'
                 ], 404);
             }
 
             $entregadorId = $usuario->entregador->id;
 
-            $entregas = Entrega::with(['empresa', 'enderecoOrigem', 'enderecoDestino'])
-                ->where(function ($query) use ($entregadorId) {
-                    $query->where('status', 'pendente')
-                          ->orWhere(function ($q) use ($entregadorId) {
-                              $q->where('entregador_id', $entregadorId)
-                                ->where('status', 'em_transito');
-                          });
-                })
+            $minhas = Entrega::with(['empresa', 'enderecoOrigem', 'enderecoDestino'])
+                ->where('entregador_id', $entregadorId)
+                ->whereIn('status', ['aceita', 'em_transito'])
                 ->latest()
                 ->get();
 
-            return response()->json([
-                'sucesso' => true,
-                'dados' => $entregas
-            ]);
-        }
+            if ($minhas->isNotEmpty()) {
+                return response()->json(['dados' => $minhas]);
+            }
+
+            $pendentes = Entrega::with(['empresa', 'enderecoOrigem', 'enderecoDestino'])
+                ->where('status', 'pendente')
+                ->latest()
+                ->get();
+
+            return response()->json(['dados' => $pendentes]);
+        }   
 
         // Para a empresa: retorna entregas pendentes e em transito
         if ($usuario->cargo == 'empresa') {
             if (!$usuario->empresa) {
                 return response()->json([
-                    'sucesso' => false,
                     'mensagem' => 'Perfil de empresa não encontrado.'
                 ], 404);
             }
@@ -60,13 +59,11 @@ class EntregaController extends Controller
                 ->get();
 
             return response()->json([
-                'sucesso' => true,
                 'dados' => $entregas
             ]);
         }
 
         return response()->json([
-            'sucesso' => false,
             'mensagem' => 'Usuário não tem permissão para consultar entregas'
         ], 403);
     }
@@ -86,7 +83,6 @@ class EntregaController extends Controller
 
         if ($validator->fails()) {
             return response()->json([
-                'sucesso' => false,
                 'mensagem' => $validator->errors()->first()
             ], 422);
         }
@@ -96,7 +92,6 @@ class EntregaController extends Controller
 
         if (!$usuario || !$usuario->empresa) {
             return response()->json([
-                'sucesso' => false,
                 'mensagem' => 'Usuário não possui uma empresa associada.'
             ], 403);
         }
@@ -116,14 +111,12 @@ class EntregaController extends Controller
 
         if (!$origem) {
             return response()->json([
-                'sucesso' => false,
                 'mensagem' => 'O endereço de origem não pertence à sua empresa.'
             ], 422);
         }
 
         if (!$destino) {
             return response()->json([
-                'sucesso' => false,
                 'mensagem' => 'O endereço de destino não pertence à sua empresa.'
             ], 422);
         }
@@ -135,7 +128,6 @@ class EntregaController extends Controller
             $destino->longitude === null
         ) {
             return response()->json([
-                'sucesso' => false,
                 'mensagem' => 'Algum dos endereços não possui localização válida.'
             ], 422);
         }
@@ -170,7 +162,6 @@ class EntregaController extends Controller
             empty($response->json('routes'))
         ) {
             return response()->json([
-                'sucesso' => false,
                 'mensagem' => 'Não foi encontrada uma rota entre os endereços fornecidos.'
             ], 422);
         }
@@ -212,7 +203,6 @@ class EntregaController extends Controller
             ]);
 
             return response()->json([
-                'sucesso' => true,
                 'mensagem' => 'Entrega cadastrada com sucesso!',
                 'dados' => $entrega
             ], 201);
@@ -221,24 +211,120 @@ class EntregaController extends Controller
 
     public function show($id)
     {
-        $entrega = Entrega::with(['empresa', 'entregador', 'enderecoOrigem', 'enderecoDestino'])->findOrFail($id);
+        $usuario = Auth::user();
 
-        return response()->json(['sucesso' => true, 'dados' => $entrega]);
-    }
+        $entrega = Entrega::with([
+            'empresa',
+            'entregador',
+            'enderecoOrigem',
+            'enderecoDestino'
+        ])->findOrFail($id);
+        // Só a empresa dona ou o entregador atribuído podem ver
+        $podeVer = false;
+
+        if ($usuario->cargo === 'empresa' && $entrega->empresa_id === $usuario->empresa->id) {
+            $podeVer = true;
+        }
+
+        if ($usuario->cargo === 'entregador' && $entrega->entregador_id === $usuario->entregador->id) {
+            $podeVer = true;
+        }
+
+        if (!$podeVer) {
+            return response()->json([
+                'mensagem' => 'Sem permissão para visualizar esta entrega.'
+            ], 403);
+        }
+
+        $dados = $entrega->toArray();
+        $dados['data'] = $entrega->created_at?->format('d/m/Y');
+        $dados['hora'] = $entrega->created_at?->format('H:i');
+
+        return response()->json(['dados' => $dados]);
+    }   
 
     public function update(Request $request, $id)
     {
+        $usuario = Auth::user();
         $entrega = Entrega::findOrFail($id);
-        $entrega->update($request->all());
 
-        return response()->json(['sucesso' => true, 'dados' => $entrega]);
+        // Verifica permissão
+        if ($usuario->cargo === 'empresa' && $entrega->empresa_id !== $usuario->empresa->id) {
+            return response()->json(['mensagem' => 'Sem permissão.'], 403);
+        }
+        if ($usuario->cargo === 'entregador' && $entrega->entregador_id !== $usuario->entregador->id) {
+            return response()->json(['mensagem' => 'Sem permissão.'], 403);
+        }
+
+        $request->validate([
+            'status' => 'required|in:aceita,em_transito,concluido,cancelado',
+            'observacoes' => 'nullable|string|max:500',
+        ]);
+
+        $novoStatus = $request->status;
+        $statusAtual = $entrega->status;
+
+        // Regras de transição
+        if ($novoStatus === 'aceita' && $statusAtual !== 'pendente') {
+            return response()->json(['mensagem' => 'Só entregas pendentes podem ser aceitas.'], 422);
+        }
+
+        if ($novoStatus === 'em_transito' && !in_array($statusAtual, ['pendente', 'aceita'])) {
+            return response()->json(['mensagem' => 'Só entregas pendentes ou aceitas podem iniciar.'], 422);
+        }
+
+        if ($novoStatus === 'concluido' && $statusAtual !== 'em_transito') {
+            return response()->json(['mensagem' => 'Só entregas em trânsito podem ser concluídas.'], 422);
+        }
+
+        if ($novoStatus === 'cancelado' && in_array($statusAtual, ['concluido', 'cancelado'])) {
+            return response()->json(['mensagem' => 'Esta entrega não pode mais ser cancelada.'], 422);
+        }
+
+        $dados = ['status' => $novoStatus];
+
+        if ($novoStatus === 'aceita' || $novoStatus === 'em_transito') {
+            $dados['entregador_id'] = $usuario->entregador->id;
+        }
+
+        if ($request->filled('observacoes')) {
+            $dados['observacoes'] = $request->observacoes;
+        }
+
+        $entrega->update($dados);
+
+        return response()->json([
+            'mensagem' => 'Entrega atualizada com sucesso.',
+            'dados' => $entrega->fresh(['empresa', 'entregador', 'enderecoOrigem', 'enderecoDestino']),
+        ]);
     }
 
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
+        $usuario = Auth::user();
         $entrega = Entrega::findOrFail($id);
-        $entrega->delete();
 
-        return response()->json(['sucesso' => true, 'mensagem' => 'Entrega removida com sucesso']);
-    }
+        if ($usuario->cargo === 'empresa' && $entrega->empresa_id !== $usuario->empresa->id) {
+            return response()->json(['mensagem' => 'Sem permissão.'], 403);
+        }
+        if ($usuario->cargo === 'entregador' && $entrega->entregador_id !== $usuario->entregador->id) {
+            return response()->json(['mensagem' => 'Sem permissão.'], 403);
+        }
+
+        if (in_array($entrega->status, ['concluido', 'cancelado'])) {
+            return response()->json(['mensagem' => 'Esta entrega não pode mais ser cancelada.'], 422);
+        }
+
+        // Se vier observação no body, salva antes de cancelar
+        if ($request->filled('observacoes')) {
+            $entrega->observacoes = $request->observacoes;
+        }
+
+        $entrega->update(['status' => 'cancelado']);
+
+        return response()->json([
+            'mensagem' => 'Entrega cancelada com sucesso.',
+            'dados' => $entrega,
+        ]);
+    }   
 }

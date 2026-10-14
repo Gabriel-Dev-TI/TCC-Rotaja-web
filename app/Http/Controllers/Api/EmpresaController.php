@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Empresa;
+use App\Models\Entrega;
 use App\Models\Endereco;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -30,7 +31,6 @@ class EmpresaController extends Controller
 
         if ($validator->fails()) {
             return response()->json([
-                'sucesso'  => false,
                 'mensagem' => $validator->errors()->first()
             ], 422);
         }
@@ -48,7 +48,7 @@ class EmpresaController extends Controller
             return Endereco::create($dadosEndereco);
         });
 
-        return response()->json(['sucesso' => true, 'dados' => $endereco], 201);
+        return response()->json(['dados' => $endereco], 201);
     }
 
     public function atualizarEndereco(Request $request, string $id)
@@ -67,7 +67,6 @@ class EmpresaController extends Controller
 
         if ($validator->fails()) {
             return response()->json([
-                'sucesso'  => false,
                 'mensagem' => $validator->errors()->first()
             ], 422);
         }
@@ -77,15 +76,36 @@ class EmpresaController extends Controller
 
         $endereco = Endereco::where('id', $id)
             ->where('empresa_id', $empresa->id)
-            ->firstOrFail();
+            ->first();
+
+        //Endereço não encontrado ou não pertence à empresa
+        if (!$endereco) {
+            return response()->json([
+                'mensagem' => 'Endereço não encontrado.'
+            ], 404);
+        }
+
+        //Endereço em uso em uma entrega
+        $pertence = Entrega::where('empresa_id', $empresa->id)
+            ->where(function ($query) use ($endereco) {
+                $query
+                    ->where('endereco_origem_id', $endereco->id)
+                    ->orWhere('endereco_destino_id', $endereco->id);
+            })
+            ->exists();
+
+        if ($pertence) {
+            return response()->json([
+                'mensagem' => 'O endereço está sendo usado em uma entrega.'
+            ], 409);
+        }
 
         $endereco->update($validator->validated());
 
         return response()->json([
-            'sucesso' => true,
             'dados'   => $endereco,
         ]);
-    }
+    }   
 
     public function deletarEndereco(string $id)
     {
@@ -99,14 +119,13 @@ class EmpresaController extends Controller
         $endereco->delete();
 
         return response()->json([
-            'sucesso'  => true,
             'mensagem' => 'Endereço removido com sucesso',
         ]);
     }   
 
     public function index()
     {
-        return response()->json(['sucesso' => true, 'dados' => Empresa::with(['usuario', 'endereco'])->get()]);
+        return response()->json(['dados' => Empresa::with(['usuario', 'endereco'])->get()]);
     }
 
     public function store(Request $request)
@@ -134,7 +153,6 @@ class EmpresaController extends Controller
 
     if ($validator->fails()) {
         return response()->json([
-            'sucesso' => false,
             'mensagem' => $validator->errors()->first()
         ], 422);
     }
@@ -171,7 +189,6 @@ class EmpresaController extends Controller
         $usuario->load('empresa.enderecos');
 
         return response()->json([
-            'sucesso' => true,
             'token' => $token,
             'usuario' => $usuario,
         ], 201);
@@ -181,7 +198,7 @@ class EmpresaController extends Controller
     {
         $empresa = Empresa::with(['usuario', 'endereco'])->findOrFail($id);
 
-        return response()->json(['sucesso' => true, 'dados' => $empresa]);
+        return response()->json(['dados' => $empresa]);
     }
 
     public function update(Request $request, string $id)
@@ -189,7 +206,7 @@ class EmpresaController extends Controller
         $empresa = Empresa::findOrFail($id);
         $empresa->update($request->all());
 
-        return response()->json(['sucesso' => true, 'dados' => $empresa]);
+        return response()->json(['dados' => $empresa]);
     }
 
     public function destroy(string $id)
@@ -197,6 +214,6 @@ class EmpresaController extends Controller
         $empresa = Empresa::findOrFail($id);
         $empresa->delete();
 
-        return response()->json(['sucesso' => true, 'mensagem' => 'Empresa removida com sucesso']);
+        return response()->json(['mensagem' => 'Empresa removida com sucesso']);
     }
 }
