@@ -146,12 +146,11 @@
 
                         <div class="d-flex flex-column flex-lg-row align-items-center">
 
-                            <button
-                                id="btn-instalar"
+                            <a href="/aplicativo/"
                                 class="btn btn-primary rounded-pill px-4 mb-3 mb-lg-0 me-lg-3"
                             >
                                 Baixe o App
-                            </button>
+                            </a>
 
                             <a
                                 href="#solucao"
@@ -843,7 +842,8 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
 
     <!-- New Age JS -->
-    <script src="{{ asset('new-age-template/js/scripts.js') }}"></script>
+    <script src="{{ asset('new-age-template/js/scripts.js') }}"></script> 
+
 
 </body>
 
