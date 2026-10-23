@@ -250,7 +250,7 @@ class EntregaController extends Controller
             return response()->json(['mensagem' => 'Sem permissão.'], 403);
         }
 
-        // Se for entregador verifica se existe observacao antes de cancelar ou excluir
+        // Se for entregador verifica se existe observacao
         $request->validate([
             'status' => 'required|in:aceita,em_transito,concluido,cancelado',
             'observacoes' => 'nullable|string|max:500',
@@ -264,7 +264,7 @@ class EntregaController extends Controller
             return response()->json(['mensagem' => 'Só entregas pendentes podem ser aceitas.'], 422);
         }
 
-        if ($novoStatus === 'em_transito' && !in_array($statusAtual, ['pendente', 'aceita'])) {
+        if ($novoStatus === 'em_transito' && !in_array($statusAtual, ['pendente', 'aceita','em_transito'])) {
             return response()->json(['mensagem' => 'Só entregas pendentes ou aceitas podem iniciar.'], 422);
         }
 

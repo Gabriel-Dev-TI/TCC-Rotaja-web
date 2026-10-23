@@ -124,12 +124,15 @@ class EntregadorController extends Controller
         if (!$response->successful() || $response->json('code') !== 'Ok' || empty($response->json('routes'))) {
             return response()->json(['mensagem' => 'Não foi encontrada uma rota entre os endereços fornecidos.'], 422);
         }
-
         $rota = $response->json('routes.0');
+
+        // Ao traçar rota o status muda de aceita para em transito
+        $atualiza = ['status' => 'em_transito'];
+        $entrega->update($atualiza);
 
         return response()->json([
             'rota'    => $rota,
-            'entrega' => $entrega,
+            'entrega' => $entrega->fresh(['empresa', 'entregador', 'enderecoOrigem', 'enderecoDestino']),
             'token'   => config('services.mapbox.public_token'),
         ]);
     }   

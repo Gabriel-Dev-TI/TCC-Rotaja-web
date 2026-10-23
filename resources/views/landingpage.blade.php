@@ -50,6 +50,9 @@
 
     <!-- New Age / Bootstrap CSS -->
     <link href="{{ asset('new-age-template/css/styles.css') }}" rel="stylesheet">
+    <link rel="manifest" href="/app/manifest.json">
+    <meta name="theme-color" content="#6F42C1">
+    <link rel="apple-touch-icon" href="/app/icons/Icon-192.png">   
 
 </head>
 
@@ -146,12 +149,12 @@
 
                         <div class="d-flex flex-column flex-lg-row align-items-center">
 
-                            <button
-                                id="btn-instalar"
+                            <a
+                                href="/app/"
                                 class="btn btn-primary rounded-pill px-4 mb-3 mb-lg-0 me-lg-3"
                             >
                                 Baixe o App
-                            </button>
+                            </a>
 
                             <a
                                 href="#solucao"
@@ -843,7 +846,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
 
     <!-- New Age JS -->
-    <script src="{{ asset('new-age-template/js/scripts.js') }}"></script>
+    <script src="{{ asset('new-age-template/js/scripts.js') }}"></script> 
 
 </body>
 
