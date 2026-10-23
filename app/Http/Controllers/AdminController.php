@@ -39,14 +39,18 @@ class AdminController extends Controller
             ->orderBy('mes')
             ->pluck('total', 'mes');
 
+        // Entregas de cada mês para os graficos 
         $entregasMensais = [];
 
         for ($mes = 1; $mes <= 12; $mes++) {
+            // Usa o get para que meses sem entregas apareça como 0
             $entregasMensais[] = $entregasPorMes->get($mes, 0);
         }
 
+        // Pega data de 11 meses atras
         $inicioPeriodo = now()->subMonths(11)->startOfMonth();
 
+        //Movimentações nos ultimo 11 meses
         $movimentacoes = Entrega::select(
                 DB::raw('YEAR(created_at) as ano'),
                 DB::raw('MONTH(created_at) as mes'),
@@ -61,14 +65,13 @@ class AdminController extends Controller
             ->orderBy('mes')
             ->get();
 
+        // O grafico precisa de label (nome do mês) e da quantidade no mês
         $labelsMovimentacoes = [];
         $dadosMovimentacoes = [];
 
         for ($i = 11; $i >= 0; $i--) {
 
-            $data = now()
-                ->subMonths($i)
-                ->startOfMonth();
+            $data = now()->subMonths($i)->startOfMonth();
 
             $ano = $data->year;
             $mes = $data->month;
@@ -79,9 +82,7 @@ class AdminController extends Controller
                 return $item->ano == $ano && $item->mes == $mes;
             });
 
-            $dadosMovimentacoes[] = $registro
-                ? $registro->total
-                : 0;
+            $dadosMovimentacoes[] = $registro ? $registro->total : 0;
         }
 
         return view('admin.dashboard', [
@@ -128,9 +129,8 @@ class AdminController extends Controller
         $usuario = $entregador->usuario;
         $entregador->delete();
 
-        if ($usuario) {
-            $usuario->delete();
-        }
+        // Se encontrar o usuario da entregador remove 
+        if ($usuario) {$usuario->delete();}
 
         return back()->with(
             'success',
@@ -144,9 +144,8 @@ class AdminController extends Controller
 
         $empresa->delete();
 
-        if ($usuario) {
-            $usuario->delete();
-        }
+        // Se encontrar o usuario da empresa remove 
+        if ($usuario) {$usuario->delete();}
 
         return back()->with(
             'success',

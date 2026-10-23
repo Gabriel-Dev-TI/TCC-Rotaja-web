@@ -560,14 +560,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
             const rota = dados.routes[0];
 
-
-            distanciaOrigemDestino =
-                rota.distance;
-
-
-            tempoOrigemDestino =
-                rota.duration;
-
+            distanciaOrigemDestino = rota.distance;
+            tempoOrigemDestino = rota.duration;
 
             adicionarRota(
                 'rota-origem-destino',
@@ -629,8 +623,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
             distanciaEntregadorOrigem = rota.distance;
-
-
             tempoEntregadorOrigem = rota.duration;
 
 
@@ -697,7 +689,7 @@ document.addEventListener('DOMContentLoaded', function () {
         function (posicao) {
 
             const latitude = posicao.coords.latitude;
-            const longitude =posicao.coords.longitude;
+            const longitude = posicao.coords.longitude;
 
             const novaPosicao = [
                 longitude,
@@ -838,41 +830,16 @@ document.addEventListener('DOMContentLoaded', function () {
         lat2,
         lon2
     ) {
-
+        // Fórmula de Haversine
         const R = 6371000;
-
-
-        const dLat =
-            (lat2 - lat1) *
-            Math.PI / 180;
-
-
-        const dLon =
-            (lon2 - lon1) *
-            Math.PI / 180;
-
-
-        const a =
-            Math.sin(dLat / 2) *
-            Math.sin(dLat / 2) +
-
-            Math.cos(lat1 * Math.PI / 180) *
-            Math.cos(lat2 * Math.PI / 180) *
-
-            Math.sin(dLon / 2) *
-            Math.sin(dLon / 2);
-
-
-        const c =
-            2 *
-            Math.atan2(
-                Math.sqrt(a),
-                Math.sqrt(1 - a)
-            );
-
-
+        const dLat = (lat2 - lat1) * Math.PI / 180;
+        const dLon = (lon2 - lon1) * Math.PI / 180;
+        const a = Math.sin(dLat / 2) *Math.sin(dLat / 2) +
+                  Math.cos(lat1 * Math.PI / 180) *
+                  Math.cos(lat2 * Math.PI / 180) *
+                  Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        const c = 2 * Math.atan2( Math.sqrt(a), Math.sqrt(1 - a) );
         return R * c;
-
     }
 
     map.on('load', function () {
@@ -881,44 +848,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     });
 
-    document
-        .getElementById('formFinalizar')
-        .addEventListener('submit', function (event) {
-
-            const confirmar =
-                confirm(
-                    'Deseja realmente finalizar esta entrega?'
-                );
-
-
-            if (!confirmar) {
-
-                event.preventDefault();
-
-            }
-
-        });
-
-    document
-        .getElementById('formCancelar')
-        .addEventListener('submit', function (event) {
-
-            const confirmar =
-                confirm(
-                    'Deseja realmente cancelar esta entrega?'
-                );
-
-
-            if (!confirmar) {
-
-                event.preventDefault();
-
-            }
-
-        });
-
-});
-
+}); 
 </script>
   @endif
 

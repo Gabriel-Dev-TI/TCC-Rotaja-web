@@ -336,6 +336,7 @@ class EnderecoController extends Controller
         if ($pertence) {
             $endereco->delete();
         }
+        //Se não foi usado ainda apaga totalmente
         else{
             $endereco->forceDelete();
         }

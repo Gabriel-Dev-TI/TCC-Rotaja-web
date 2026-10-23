@@ -136,6 +136,10 @@ class EntregadorController extends Controller
         ->latest()
         ->first();
 
+        if($entrega){
+        $entrega->update(['status' =>'em_transito',]);
+        }
+
         return view('entregador.rota',['entrega' => $entrega,]);
     }
 

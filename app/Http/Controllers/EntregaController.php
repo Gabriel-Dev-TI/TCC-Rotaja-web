@@ -237,38 +237,6 @@ class EntregaController extends Controller
     }
 
     /**
-    * Exibe os detalhes de uma entrega.
-    */
-    public function show(Entrega $entrega)
-    {
-        $usuario = auth()->user();
-        $cargo = $usuario->cargo;
-        $user = $usuario->$cargo;
-
-        if (!$user && $cargo !== 'admin') {
-            abort(403, ucfirst($cargo) . ' não encontrado.');
-        }
-
-        if ($cargo !== 'admin') {
-
-            $campoId = $cargo . '_id';
-
-            if ($entrega->$campoId !== $user->id) {
-                abort(403, 'Você não tem acesso a esta entrega.');
-            }
-        }
-
-        $entrega->load([
-            'empresa.usuario',
-            'entregador.usuario',
-            'enderecoOrigem',
-            'enderecoDestino',
-        ]);
-
-        return view('entregas.show', ['entrega' => $entrega,]);
-    }
-
-    /**
      * Cancela uma entrega.
      */
     public function destroy(Entrega $entrega)

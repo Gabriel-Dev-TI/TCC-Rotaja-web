@@ -38,13 +38,13 @@ class ProfileController extends Controller
             : null;
 
         $enderecoFormatado = $endereco
-            ? trim(
+            ? 
                 ($endereco->logradouro ?? '') .
                 (isset($endereco->numero) ? ', ' . $endereco->numero : '') .
                 (!empty($endereco->bairro) ? ' - ' . $endereco->bairro : '') .
                 (!empty($endereco->cidade) ? ' - ' . $endereco->cidade : '') .
                 (!empty($endereco->estado) ? '/' . $endereco->estado : '')
-            )
+            
             : null;
 
         return view('profile.show', [
@@ -84,7 +84,6 @@ class ProfileController extends Controller
             'telefone' => [
                 'nullable',
                 'string',
-                'max:20',
             ],
         ]);
 

@@ -146,12 +146,12 @@
 
                         <div class="d-flex flex-column flex-lg-row align-items-center">
 
-                            <a
-                                href="rotaja.apk"
+                            <button
+                                id="btn-instalar"
                                 class="btn btn-primary rounded-pill px-4 mb-3 mb-lg-0 me-lg-3"
                             >
                                 Baixe o App
-                            </a>
+                            </button>
 
                             <a
                                 href="#solucao"
