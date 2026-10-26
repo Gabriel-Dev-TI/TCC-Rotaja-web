@@ -34,6 +34,12 @@
 
 @endif
 
+@if(session('status') === 'password-updated')
+    <div class="alert alert-success">
+        Senha alterada com sucesso.
+    </div>
+@endif
+
 @if($errors->any())
 
     <div class="alert alert-danger">
