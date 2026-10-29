@@ -301,10 +301,10 @@ class EntregaController extends Controller
         $usuario = Auth::user();
         $entrega = Entrega::findOrFail($id);
 
-        if ($usuario->cargo === 'empresa' && $entrega->empresa_id !== $usuario->empresa->id) {
+        if ($usuario->cargo === 'empresa' && $entrega->empresa_id != $usuario->empresa->id) {
             return response()->json(['mensagem' => 'Sem permissão.'], 403);
         }
-        if ($usuario->cargo === 'entregador' && $entrega->entregador_id !== $usuario->entregador->id) {
+        if ($usuario->cargo === 'entregador' && $entrega->entregador_id != $usuario->entregador->id) {
             return response()->json(['mensagem' => 'Sem permissão.'], 403);
         }
 
